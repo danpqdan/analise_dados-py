@@ -1,4 +1,4 @@
-# -*- coding: cp1252 -*-
+# -*- coding: utf-8 -*-
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -80,24 +80,24 @@ def gravar():
         messagebox.showinfo("Aviso", "Item Gravado com Sucesso")
         limpar()
     else:
-        messagebox.showerror("Erro", "Houve um Erro na Grava��o")
+        messagebox.showerror("Erro", "Houve um Erro na Gravação")
 
     con.fechar()
     
     visualizar()
 
 def excluir():
-    var_del = messagebox.askyesno("Exclus�o", "Tem certeza que deseja excluir?")
+    var_del = messagebox.askyesno("Exclusívo", "Tem certeza que deseja excluir?")
     if var_del == True:
         var_usuario = txtUsuario.get()
 
         con=conexao.conexao()
         sql_text = f"delete from login where usuario = '{var_usuario}'"
         if con.gravar(sql_text):
-              messagebox.showinfo("Aviso", "Item Exclu�do com Sucesso")
+              messagebox.showinfo("Aviso", "Item Excluídos com Sucesso")
               limpar()
         else:
-            messagebox.showerror("Erro", "Houve um Erro na Exclus�o")
+            messagebox.showerror("Erro", "Houve um Erro na Exclusão")
             
         con.fechar()
 
@@ -111,7 +111,7 @@ if platform.system() == "Windows":
 else:
     tela_login.attributes('-zoomed', True)
 tela_login['bg'] = "gold"
-tela_login.title("Controle Comercial - Gest�o de Acessos")
+tela_login.title("Controle Comercial - Gestão de Acessos")
 
 tkimage_cli = ImageTk.PhotoImage(Image.open(imagemPadrao).resize((tela_login.winfo_screenwidth(), tela_login.winfo_screenheight())))
 tk.Label(tela_login, image=tkimage_cli).pack()
@@ -164,7 +164,7 @@ tree.columnconfigure(0, weight=1)
 tree.rowconfigure(0, weight=1)
 
 tree.column("#1")
-tree.heading("#1", text="C�digo")
+tree.heading("#1", text="Código")
 tree.column("#1", width = 100, anchor ='c')
 
 tree.column("#2")

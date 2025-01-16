@@ -1,4 +1,4 @@
-# -*- coding: cp1252 -*-
+# -*- coding: utf-8 -*-
 import platform
 import tkinter as tk
 from tkinter import ttk
@@ -24,7 +24,7 @@ if platform.system() == "Windows":
 else:
     tela_prod.attributes('-zoomed', True)
 tela_prod['bg'] = "gold"
-tela_prod.title("Controle Comercial - Cadastro de Produtos/Servi�os")
+tela_prod.title("Controle Comercial - Cadastro de Produtos/Serviços")
 
 tkimage_cli = ImageTk.PhotoImage(Image.open(imagemSecundaria).resize((tela_prod.winfo_screenwidth(), tela_prod.winfo_screenheight())))
 tk.Label(tela_prod, image=tkimage_cli).pack()
@@ -56,7 +56,7 @@ def buscar():
         txtcusto.insert(0,locale.currency(rs[4]))
         txtpreco.insert(0,locale.currency(rs[5]))
     else:
-        messagebox.showwarning("Aviso", "C�digo n�o Encontrado",parent = tela_prod)
+        messagebox.showwarning("Aviso", "Código não Encontrado",parent = tela_prod)
         limpar()
         txtcodigo.focus_set()
 
@@ -106,24 +106,24 @@ def gravar():
         messagebox.showinfo("Aviso", "Item Gravado com Sucesso",parent = tela_prod)
         limpar()
     else:
-        messagebox.showerror("Erro", "Houve um Erro na Grava��o",parent = tela_prod)
+        messagebox.showerror("Erro", "Houve um Erro na Gravação",parent = tela_prod)
 
     con.fechar()
 
     visualizar()
 
 def excluir():
-    var_del = messagebox.askyesno("Exclus�o", "Tem certeza que deseja excluir?",parent = tela_prod)
+    var_del = messagebox.askyesno("Exclusão", "Tem certeza que deseja excluir?",parent = tela_prod)
     if var_del == True:
         var_codigo = txtcodigo.get()
 
         con=conexao.conexao()
         sql_text = f"delete from prodserv where codigo = '{var_codigo}'"
         if con.gravar(sql_text):
-              messagebox.showinfo("Aviso", "Item Exclu�do com Sucesso",parent = tela_prod)
+              messagebox.showinfo("Aviso", "Item Excluído com Sucesso",parent = tela_prod)
               limpar()
         else:
-            messagebox.showerror("Erro", "Houve um Erro na Exclus�o",parent = tela_prod)
+            messagebox.showerror("Erro", "Houve um Erro na Exclusão",parent = tela_prod)
 
         con.fechar()
 
@@ -145,7 +145,7 @@ if platform.system() == "Windows":
 else:
     tela_prod.attributes('-zoomed', True)
 tela_prod['bg'] = "gold"
-tela_prod.title("Controle Comercial - Cadastro de Produtos/Servi�os")
+tela_prod.title("Controle Comercial - Cadastro de Produtos/Serviço")
 
 limite_campo = tela_prod.register(func=limitar_tamanho)
 
@@ -166,7 +166,7 @@ cmbtipo = ttk.Combobox(tela_prod, values=tipos, font=('Calibri', 12))
 cmbtipo.place(x=150, y=60, width=120, height = 25)
 #cmbtipo.current(0)
 
-lbldescricao = tk.Label(tela_prod, text ="Descri��o:", bg="lightskyblue", fg="black", font=('Calibri', 12), anchor = 'w')
+lbldescricao = tk.Label(tela_prod, text ="Descrição:", bg="lightskyblue", fg="black", font=('Calibri', 12), anchor = 'w')
 lbldescricao.place(x = 50, y = 100, width = 90)
 entry = tk.Entry(tela_prod, font=('Calibri', 12))
 txtdescricao =  tk.Entry(tela_prod, font=('Calibri', 12), validate='key', validatecommand=(limite_campo,'%P',60))
@@ -182,7 +182,7 @@ lblcusto.place(x = 50, y = 180, width = 90)
 txtcusto = tk.Entry(tela_prod, font=('Calibri', 12), validate='key', validatecommand=(limite_campo,'%P',13))
 txtcusto.place(x = 150, y = 180, width = 120)
 
-lblpreco = tk.Label(tela_prod, text ="Pre�o:", bg="lightskyblue", fg="black", font=('Calibri', 12), anchor = 'w')
+lblpreco = tk.Label(tela_prod, text ="Preço:", bg="lightskyblue", fg="black", font=('Calibri', 12), anchor = 'w')
 lblpreco.place(x = 50, y = 220, width = 90)
 txtpreco = tk.Entry(tela_prod, font=('Calibri', 12), validate='key', validatecommand=(limite_campo,'%P',13))
 txtpreco.place(x = 150, y = 220, width = 120)
@@ -215,7 +215,7 @@ tree.columnconfigure(0, weight=1)
 tree.rowconfigure(0, weight=1)
 
 tree.column("#1")
-tree.heading("#1", text="C�digo")
+tree.heading("#1", text="Código")
 tree.column("#1", width = 100, anchor ='c')
 
 tree.column("#2")
@@ -223,7 +223,7 @@ tree.heading("#2", text="Tipo")
 tree.column("#2", width = 80, anchor ='c')
 
 tree.column("#3")
-tree.heading("#3", text="Descri��o")
+tree.heading("#3", text="Descrição")
 tree.column("#3", width = 200, anchor ='w')
 
 tree.column("#4")
@@ -235,7 +235,7 @@ tree.heading("#5", text="Custo")
 tree.column("#5", width = 100, anchor ='c')
 
 tree.column("#6")
-tree.heading("#6", text="Pre�o")
+tree.heading("#6", text="Preço")
 tree.column("#6", width = 100, anchor ='c')
 
 tree.place(x=50,y=360,height=120)

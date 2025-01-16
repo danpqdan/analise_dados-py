@@ -1,4 +1,4 @@
-# -*- coding: cp1252 -*-
+# -*- coding: utf-8 -*-
 import platform
 import tkinter as tk
 from tkinter import messagebox
@@ -45,7 +45,7 @@ def buscar():
         txtobservacao.insert("1.0",(rs[4]))
     
     else:
-        messagebox.showwarning("Aviso", "C�digo n�o Encontrado",parent = tela_cli)
+        messagebox.showwarning("Aviso", "Código não Encontrado",parent = tela_cli)
         limpar()
         txtcodigo.focus_set()
 
@@ -114,24 +114,24 @@ def gravar():
         messagebox.showinfo("Aviso", "Item Gravado com Sucesso", parent = tela_cli)
         limpar()
     else:
-        messagebox.showerror("Erro", "Houve um Erro na Grava��o", parent = tela_cli)
+        messagebox.showerror("Erro", "Houve um Erro na Gravação", parent = tela_cli)
 
     con.fechar()
 
     visualizar()
 
 def excluir():
-    var_del = messagebox.askyesno("Exclus�o", "Tem certeza que deseja excluir?", parent = tela_cli)
+    var_del = messagebox.askyesno("Exclusão", "Tem certeza que deseja excluir?", parent = tela_cli)
     if var_del == True:
         var_codigo = txtcodigo.get()
 
         con=conexao.conexao()
         sql_text = f"delete from clientes where codigo = '{var_codigo}'"
         if con.gravar(sql_text):
-              messagebox.showinfo("Aviso", "Item Exclu�do com Sucesso",parent = tela_cli)
+              messagebox.showinfo("Aviso", "Item Excluido com Sucesso",parent = tela_cli)
               limpar()
         else:
-            messagebox.showerror("Erro", "Houve um Erro na Exclus�o",parent = tela_cli)
+            messagebox.showerror("Erro", "Houve um Erro na Exclusão",parent = tela_cli)
 
             
         con.fechar()
@@ -227,7 +227,7 @@ style.configure("mystyle.Treeview.Heading", font=("Calibri", 12, "bold"))
 tree = ttk.Treeview(tela_cli, column=("c1", "c2", "c3", "c4", "c5"), show='headings', style="mystyle.Treeview")
 
 tree.column("#1")
-tree.heading("#1", text="C�digo")
+tree.heading("#1", text="Código")
 tree.column("#1", width = 100, anchor ='c')
 
 tree.column("#2")
@@ -243,7 +243,7 @@ tree.heading("#4", text="E-mail")
 tree.column("#4", width = 150, anchor ='c')
 
 tree.column("#5")
-tree.heading("#5", text="Observa��o")
+tree.heading("#5", text="Observação")
 tree.column("#5", width = 300, anchor ='c')
 
 tree.place(x=50,y=420,height=120)

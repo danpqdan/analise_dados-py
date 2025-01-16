@@ -1,4 +1,4 @@
-# -*- coding: cp1252 -*-
+# -*- coding: utf-8 -*-
 import os
 import platform
 import conexao
@@ -75,11 +75,11 @@ def gravar_lin():
     var_valor = txtvalor.get()
 
     if var_codcli == "":
-         messagebox.showwarning("Aviso", "Favor preencher o c�digo do cliente",parent = tela_venda)
+         messagebox.showwarning("Aviso", "Favor preencher o código do cliente",parent = tela_venda)
          txtcodcli.focus_set()
     else:
          if var_codprod == "":
-             messagebox.showwarning("Aviso", "Favor preencher o c�digo do produto" ,parent = tela_venda)
+             messagebox.showwarning("Aviso", "Favor preencher o código do produto" ,parent = tela_venda)
              txtcodprod.focus_set()
          else:
              if var_qtde == "":
@@ -118,7 +118,7 @@ def excluir():
             visualizar()
             total()
     except:
-        messagebox.showwarning("Aviso", "Necess�rio Selecionar uma Linha antes de Clicar em Excluir",parent = tela_venda)
+        messagebox.showwarning("Aviso", "Necessário Selecionar uma Linha antes de Clicar em Excluir",parent = tela_venda)
 
 def excluir_inic():
     num_venda = txtnumvenda.get()
@@ -213,7 +213,7 @@ def gravar():
 def bus_cli(event=None):
     print(event.keycode)
     if event.keycode==13:
-        print('Voc� digitou enter')
+        print('Você digitou enter')
 
         var_codcli = txtcodcli.get()
      
@@ -232,7 +232,7 @@ def bus_cli(event=None):
             txtcodprod.focus_set()
             
         else:
-            messagebox.showwarning("Aviso", "Cliente n�o Encontrado",parent = tela_venda)
+            messagebox.showwarning("Aviso", "Cliente Não Encontrado",parent = tela_venda)
 
             txtnomecli.config(state= "normal")
             
@@ -269,7 +269,7 @@ def bus_prod(event=None):
 
         else:
             txtcodprod.focus_set()
-            messagebox.showwarning("Aviso", "Produto n�o Encontrado",parent = tela_venda)
+            messagebox.showwarning("Aviso", "Produto não Encontrado",parent = tela_venda)
             
         con.fechar()
 
@@ -300,7 +300,7 @@ def cancelar():
         total()
     
 def imprimir():
-    # Cabe�alho do Relat�rio
+    # Cabeçalho do Relatório
     today = date.today()
     d3 = today.strftime("%d/%m/%y")
         
@@ -323,18 +323,18 @@ def imprimir():
 
     cnv.drawString(540,820,d3)
 
-    # Cabe�alho do Pedido
+    # Cabeçalho do Pedido
     cnv.setLineWidth(2)
     cnv.line(0, 810, 595, 810)
 
     cnv.setFont('Times-Roman', 12)
     cnv.setFillColorRGB(0 ,0, 0)
 
-    cnv.drawString(10,780, "N�mero do Pedido: " + txtnumvenda.get())
+    cnv.drawString(10,780, "Número do Pedido: " + txtnumvenda.get())
     cnv.drawString(200,780,"Data do Pedido:   " + d3)
     
     
-    cnv.drawString(10,750 ,"C�digo do Cliente: " + txtcodcli.get())
+    cnv.drawString(10,750 ,"Código do Cliente: " + txtcodcli.get())
     cnv.drawString(200,750,"Nome do Cliente:  " + txtnomecli.get())
 
     cnv.setLineWidth(1)
@@ -344,9 +344,9 @@ def imprimir():
     cnv.setFont('Times-Bold', 12)
     cnv.drawString(1,700,"Lin")
     cnv.drawString(40,700,"Cod. Prod")
-    cnv.drawString(130,700,"Descri��o")
+    cnv.drawString(130,700,"Descrição")
     cnv.drawString(320,700,"Quantidade")
-    cnv.drawString(430,700,"Valor Unit�rio")
+    cnv.drawString(430,700,"Valor Unítario")
     cnv.drawString(530,700,"Valor")
     cnv.setFont('Times-Roman', 12)
     
@@ -402,7 +402,7 @@ else:
 tela_venda['bg'] = "dimgray"
 tela_venda.title("Controle Comercial - Vendas")
 
-lblnumvenda = tk.Label(tela_venda, text ="N�m. Venda:", font=('Calibri', 12, 'bold'), bg = 'lightskyblue', fg = 'black', anchor = 'w')
+lblnumvenda = tk.Label(tela_venda, text ="Núm. Venda:", font=('Calibri', 12, 'bold'), bg = 'lightskyblue', fg = 'black', anchor = 'w')
 lblnumvenda.place(x = 50, y = 25, width = 100, height=20)
 
 txtnumvenda =  tk.Entry(tela_venda, justify='center', font=('Calibri', 12, 'bold'))
@@ -424,14 +424,14 @@ txtnomecli =  tk.Entry(tela_venda)
 txtnomecli.place(x = 160, y = 100, width = 560, height=20)
 txtnomecli.config(state= "disabled")
 
-lblcodprod = tk.Label(tela_venda, text = "C�d. Prod:", font=('Calibri', 10, 'bold'), bg = 'lightskyblue', fg = 'black', anchor = 'w')
+lblcodprod = tk.Label(tela_venda, text = "Cód. Prod:", font=('Calibri', 10, 'bold'), bg = 'lightskyblue', fg = 'black', anchor = 'w')
 lblcodprod.place(x = 50, y = 160, width = 100, height=20)
 
 txtcodprod =  tk.Entry(tela_venda)
 txtcodprod.place(x = 160, y = 160, width = 100, height=20)
 txtcodprod.bind('<Key>', bus_prod)
 
-lbldescricao = tk.Label(tela_venda, text = "Descri��o:", font=('Calibri', 10, 'bold'), bg = 'lightskyblue', fg = 'black', anchor = 'w')
+lbldescricao = tk.Label(tela_venda, text = "Descrição:", font=('Calibri', 10, 'bold'), bg = 'lightskyblue', fg = 'black', anchor = 'w')
 lbldescricao.place(x = 50, y = 200, width = 100, height=20)
 
 txtdescricao =  tk.Entry(tela_venda)
@@ -510,11 +510,11 @@ tree.heading("#1", text="Linha")
 tree.column("#1", width = 50, anchor ='c')
 
 tree.column("#2")
-tree.heading("#2", text="C�digo")
+tree.heading("#2", text="Código")
 tree.column("#2", width = 100, anchor ='c')
 
 tree.column("#3")
-tree.heading("#3", text="Descri��o")
+tree.heading("#3", text="Descrição")
 tree.column("#3", width = 200, anchor ='w')
 
 tree.column("#4")

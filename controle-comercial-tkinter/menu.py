@@ -1,9 +1,10 @@
-# -*- coding: cp1252 -*-
+# -*- coding: utf-8 -*-
+
 import platform
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
-from router_path import dir, imagemPadrao, imagemSecundaria
+from router_path import imagemPadrao, pathClientes, pathProdutos, pathMenu, pathCadLogin, pathVendas
 
 
 tela = tk.Tk() 
@@ -20,16 +21,16 @@ tkimage = ImageTk.PhotoImage(Image.open(imagemPadrao).resize((tela.winfo_screenw
 tk.Label(tela, image=tkimage).pack()
 
 def clientes():
-    exec(open(r"/home/zenxbr/Downloads/Controle/clientes.py").read(),locals())
+    exec(open(pathClientes).read(),locals())
 
 def produtos():
-    exec(open(r"/home/zenxbr/Downloads/Controle/produtos.py").read(),locals())
+    exec(open(pathProdutos).read(),locals())
 
 def cadlogin():
-    exec(open(r"/home/zenxbr/Downloads/Controle/cadlogin.py").read(),locals())
+    exec(open(pathCadLogin).read(),locals())
 
 def vendas():
-    exec(open(r"/home/zenxbr/Downloads/Controle/vendas.py").read(),locals())
+    exec(open(pathVendas).read(),locals())
 
 def sobre():
       messagebox.showinfo("Sobre", "Sistema Comercial 1.0")
@@ -39,7 +40,7 @@ def sair():
     if var_sair == True:
          tela.destroy()
     else:
-        messagebox.showinfo("�timo", "Que bom que voc� escolheu continuar")
+        messagebox.showinfo("Ótimo", "Que bom que você escolheu continuar")
 
 barramenu = tk.Menu(tela)
 menu_func = tk.Menu(barramenu)
@@ -47,9 +48,9 @@ menu_ajuda = tk.Menu(barramenu)
 
 barramenu.add_cascade(label="Funcionalidades", menu=menu_func)
 menu_func.add_command(label="Clientes", command=clientes)
-menu_func.add_command(label="Produtos/Servi�os", command=produtos)
+menu_func.add_command(label="Produtos/Serviços", command=produtos)
 menu_func.add_command(label="Vendas", command=vendas)
-menu_func.add_command(label="Gest�o de Acessos", command=cadlogin)
+menu_func.add_command(label="Gestão de Acessos", command=cadlogin)
 menu_func.add_separator()
 menu_func.add_command(label="Sair",command=sair)
 
