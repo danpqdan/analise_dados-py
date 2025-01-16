@@ -65,7 +65,7 @@ for index, row in tabela.iterrows():
     time.sleep(3)
 
     # Clicar Submeter
-    driver.find_element(By.XPATH, '//*[@id="1056525453"]').click()
+    # driver.find_element(By.XPATH, '//*[@id="1056525453"]').click()
     time.sleep(15)
 
 time.sleep(10)

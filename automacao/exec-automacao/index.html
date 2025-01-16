@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Informações Pessoais</title>
+</head>
+<body>
+    <h1>Formulário de Informações Pessoais</h1>
+    <form>
+        <div>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required>
+        </div>
+        <div>
+            <label for="telefone">Telefone:</label>
+            <input type="tel" id="telefone" name="telefone" required>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label>Estado Civil:</label>
+            <input type="checkbox" id="estado_civil" name="estado_civil" value="solteiro">
+            <label for="solteiro">Solteiro</label>
+            <input type="checkbox" id="estado_civil" name="estado_civil" value="casado">
+            <label for="casado">Casado</label>
+        </div>
+        <div>
+            <label>Pratica Esportes:</label>
+            <input type="checkbox" id="pratica_esporte" name="pratica_esporte" value="sim">
+            <label for="pratica_esporte">Sim</label>
+            <input type="checkbox" id="pratica_esporte" name="pratica_esporte" value="nao">
+            <label for="pratica_esporte">Não</label>
+        </div>
+        <div>
+            <button type="submit" id='submit'>Enviar</button>
+        </div>
+    </form>
+    <a href="https://www.bgmax.com.br/automacao3" target="_blank" id="bgmax">BGMAX</a>
+</body>
+</html>
