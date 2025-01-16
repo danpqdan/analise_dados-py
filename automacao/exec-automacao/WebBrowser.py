@@ -196,7 +196,7 @@ def main(arquivo: str):
 if __name__ == "__main__":
     confirm = input('''Script para inserção de dados em um site pré definido... 
                         pressione qualquer tecla para continuar... Ou digite "Q" para sair...''')
-    nomeDoArquivo = input('Digite o nome do arquivo: exemplo.xlsx')
+    nomeDoArquivo = input('Digite o nome do arquivo: exemplo.xlsx \n')
     excel = f'{diretorioScript}/{nomeDoArquivo}'
     if confirm.lower() != 'q':
         loadWorkBook()
