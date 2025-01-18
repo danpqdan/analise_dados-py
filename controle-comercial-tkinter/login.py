@@ -39,15 +39,15 @@ def validasenha():
         rs=con.consultar(sql_txt)
        
         if rs:
-           lblresult = tk.Label(tela_log, text ="**** Acesso Permitido ***", foreground='blue')
-           lblresult.place(x = 125, y = 110)
+           lblresult = tk.Label(container, text ="**** Acesso Permitido ***", foreground='blue')
+           lblresult.grid(column=1, row=3)
            con.fechar()
            tela_log.destroy()
            exec(open(pathMenu).read(),locals())
           
         else:
-           lblresult = tk.Label(tela_log, text ="Usuario ou Senha Invalida", foreground='red')
-           lblresult.place(x = 125, y = 130)              
+           lblresult = tk.Label(container, text ="Usuario ou Senha Invalida", foreground='red')
+           lblresult.grid(column=1, row=3)
     except Exception as e:
         print(f"Erro: {e}")
     finally:
@@ -61,11 +61,6 @@ def mostrarsenha():
     else:
         txtsenha.config(show='')
         btnmostrar.config(text='Enconder Senha')
-
-'''
-    Estilos personalizados
-'''
-
 
 '''
     Configurações de tela
