@@ -16,7 +16,7 @@ if getattr(sys, 'frozen', False):
     imagemSecundaria = os.path.join(sys._MEIPASS, 'fundo_submodulos.jpg')
     imagemPadrao = os.path.join(sys._MEIPASS, 'fundo_menu.jpg')
     pathClientes = os.path.join(sys._MEIPASS, 'clientes.py')
-    pathCadLogin = os.path.join(sys._MEIPASS, 'cad_login.py')
+    pathCadLogin = os.path.join(sys._MEIPASS, 'cadlogin.py')
     pathConexao = os.path.join(sys._MEIPASS, 'conexao.py')
     pathLogin = os.path.join(sys._MEIPASS, 'login.py')
     pathMenu = os.path.join(sys._MEIPASS, 'menu.py')
@@ -24,7 +24,7 @@ if getattr(sys, 'frozen', False):
     pathVendas = os.path.join(sys._MEIPASS, 'vendas.py')
 else:
     pathClientes = os.path.join(dir, 'clientes.py')
-    pathCadLogin = os.path.join(dir, 'cad_login.py')
+    pathCadLogin = os.path.join(dir, 'cadlogin.py')
     pathConexao = os.path.join(dir, 'conexao.py')
     pathLogin = os.path.join(dir, 'login.py')
     pathMenu = os.path.join(dir, 'menu.py')
