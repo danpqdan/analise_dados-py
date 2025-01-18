@@ -2,6 +2,7 @@
 import platform
 import tkinter as tk
 from tkinter import ttk
+from tkinter.ttk import Treeview
 from tkinter import messagebox
 from PIL import Image, ImageTk
 import conexao
@@ -211,29 +212,55 @@ style = ttk.Style()
 
 style.configure("mystye.Treeview", font=("Calibri", 10))
 style.configure("mystyle.Treeview.Heading", font=("Calibri", 12, "bold"))
+ 
 
-tree = ttk.Treeview(tela_prod, column=("c1", "c2", "c3", "c4", "c5", "c6"), show='headings', style="mystyle.Treeview", padding=0)
+
+'''
+    Colunas de produtos
+'''
+def ordenar_coluna(tree: Treeview, col_id: str, reverse: bool) -> None:
+    def tratar_valor(valor):
+            """Função para tratar o valor da célula antes da ordenação."""
+            try:
+                float(valor) 
+                if '.' in valor or valor.isdigit():
+                    return float(valor)    
+                else: 
+                    return int(valor)
+            except ValueError: 
+                return valor.lower()
+        
+    itens = [(tratar_valor(tree.set(k, col_id)), k) for k in tree.get_children("")]    
+    itens.sort(reverse=reverse, key=lambda x: x[0])
+    for index, (_, k) in enumerate(itens):
+        tree.move(k, '', index)
+    
+    tree.heading(col_id, command=lambda:ordenar_coluna(tree, col_id, not reverse))
+
+# 
+tree = ttk.Treeview(tela_prod, column=("Código", "Tipo", "Descrição", "Quantidade", "Custo", "Preço"), show='headings', style="mystyle.Treeview", padding=0)
 
 tree.columnconfigure(0, weight=1)
 tree.rowconfigure(0, weight=1)
 
-tree.heading("#1", text="Código")
+tree.heading("#1", text="Código", command=lambda:ordenar_coluna(tree, "#1", False) )
 tree.column("#1", width = 100, anchor ='c')
 
-tree.heading("#2", text="Tipo")
+tree.heading("#2", text="Tipo", command=lambda:ordenar_coluna(tree, "#2", False))
 tree.column("#2", width = 80, anchor ='c')
 
-tree.heading("#3", text="Descrição")
+tree.heading("#3", text="Descrição", command=lambda:ordenar_coluna(tree, "#3", False))
 tree.column("#3", width = 200, anchor ='w')
 
-tree.heading("#4", text="Quantidade")
+tree.heading("#4", text="Quantidade", command=lambda:ordenar_coluna(tree, "#4", False))
 tree.column("#4", width = 100, anchor ='c')
 
-tree.heading("#5", text="Custo")
+tree.heading("#5", text="Custo", command=lambda:ordenar_coluna(tree, "#5", False))
 tree.column("#5", width = 100, anchor ='c')
 
-tree.heading("#6", text="Preço")
+tree.heading("#6", text="Preço", command=lambda:ordenar_coluna(tree, "#6", False))
 tree.column("#6", width = 100, anchor ='c')
+
  
 tree.place(x=50,y=360,height=120)
 
@@ -246,10 +273,4 @@ visualizar()
 txtcodigo.focus_set()
 
 tela_prod.mainloop()
-
-def on_column_click(event):
-    col_id = tree.identify_column(event.x)
-    print(f'Coluna clicada: {col_id}')
-
-tree.bind("<Button-1>", on_column_click) 
 
