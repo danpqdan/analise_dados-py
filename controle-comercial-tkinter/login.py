@@ -4,8 +4,7 @@ import tkinter as tk
 from tkinter import *
 from PIL import Image, ImageTk
 import conexao 
-from router_path import dir, imagemPadrao, imagemSecundaria
-
+from router_path import imagemSecundaria, pathMenu
 
 if __name__ == '__main__': 
     tela_log = tk.Tk()
@@ -39,7 +38,7 @@ def validasenha():
            lblresult.place(x = 125, y = 110)
            con.fechar()
            tela_log.destroy()
-           exec(open("menu.py").read(),locals())
+           exec(open(pathMenu).read(),locals())
           
         else:
            lblresult = tk.Label(tela_log, text ="Usuario ou Senha Invalida", foreground='red')
