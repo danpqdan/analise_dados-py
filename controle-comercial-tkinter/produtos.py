@@ -6,7 +6,7 @@ from tkinter.ttk import Treeview
 from tkinter import messagebox
 from PIL import Image, ImageTk
 import conexao
-from router_path import dir, imagemPadrao, imagemSecundaria
+from router_path import imagemPadrao,imagemSecundaria
 
 
 import locale
@@ -17,9 +17,12 @@ if __name__ == '__main__':
 else:
     tela_prod = tk.Toplevel()
 
+
+larguraTela = tela_prod.winfo_screenwidth()
+alturaTela = tela_prod.winfo_screenheight()
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
-tela_prod.geometry('1366x768+0+0')
+tela_prod.geometry(f'{larguraTela}x{alturaTela}+0+0')
 if platform.system() == "Windows":
     tela_prod.state('zoomed')
 else:
@@ -143,7 +146,7 @@ def limitar_tamanho(p,limite):
         return False
     return True
 
-tela_prod.geometry('1366x768+0+0')
+tela_prod.geometry(f'{larguraTela}x{alturaTela}+0+0')
 if platform.system() == "Windows":
     tela_prod.state('zoomed')
 else:

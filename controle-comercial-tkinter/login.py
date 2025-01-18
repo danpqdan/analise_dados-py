@@ -1,22 +1,27 @@
 # -*- coding: utf-8 -*-
 import sys
 import tkinter as tk
-from tkinter import *
-from PIL import Image, ImageTk
+from tkinter import * 
+from PIL import Image, ImageTk,ImageDraw
 import conexao 
 from router_path import imagemSecundaria, pathMenu
 
 if __name__ == '__main__': 
     tela_log = tk.Tk()
+    
 else:
     tela_log = tk.Toplevel()
 
-tela_log.geometry('450x300+483+250')
+
+larguraTela = tela_log.winfo_screenwidth()
+alturaTela = tela_log.winfo_screenheight()
+tela_log.geometry(f'{larguraTela}x{alturaTela}+0+0')
+
 tela_log.title("Controle Comercial - Login")
 tela_log['bg'] = "gold"
 
 tkimage_cli = ImageTk.PhotoImage(Image.open(imagemSecundaria).resize((tela_log.winfo_screenwidth(), tela_log.winfo_screenheight())))
-tk.Label(tela_log, image=tkimage_cli).pack()
+tk.Label(tela_log, image=tkimage_cli).grid()
 
 def validasenha():
 
@@ -57,24 +62,39 @@ def mostrarsenha():
         txtsenha.config(show='')
         btnmostrar.config(text='Enconder Senha')
 
-lblusuario = tk.Label(tela_log, text ="Usuario:", bg="lightskyblue", font=('Calibri', 12, 'bold'))
-lblusuario.place(x = 50, y = 50, width = 80, height=25)
-txtusuario = tk.Entry(tela_log, font=('Calibri', 12), width = 35)
-txtusuario.place(x = 150, y = 50, width = 100, height=25)
+'''
+    Estilos personalizados
+'''
 
-lblsenha = tk.Label(tela_log, text ="Senha:  ", bg="lightskyblue", font=('Calibri', 12, 'bold'))
-lblsenha.place(x = 50, y = 100, width = 80, height=25)
- 
-txtsenha  = tk.Entry(tela_log, font=('Calibri', 12), width = 35, show = "*")
-txtsenha.place(x = 150, y = 100, width = 100, height=25)
 
-btnsubmeter = tk.Button(tela_log, text ="Login", 
+'''
+    Configurações de tela
+'''
+container = tk.Frame(tela_log)
+container.place(bordermode='inside', relx=0.5, rely=0.5, anchor="center")
+form = tk.Frame(container)
+form.grid(row=1, column=1, padx=30, pady=10)
+frame_botao = tk.Frame(container)
+frame_botao.grid(row=2, column=1, pady=5) 
+
+lblusuario = tk.Label(form, text ="Usuario:", bg="lightskyblue", font=('Calibri', 12, 'bold'))
+lblusuario.grid(row=0, column=0, padx=5, pady=5)
+txtusuario = tk.Entry(form, font=('Calibri', 12), width = 35)
+txtusuario.grid(row=0, column=1, padx=5, pady=5)
+
+lblsenha = tk.Label(form, text ="Senha:  ", bg="lightskyblue", font=('Calibri', 12, 'bold'))
+lblsenha.grid(row=1, column=0)
+txtsenha  = tk.Entry(form, font=('Calibri', 12), width = 35, show = "*")
+txtsenha.grid(row=1, column=1)
+
+btnsubmeter = tk.Button(frame_botao, text ="Login", 
                       bg ='black',foreground='white', font=('Calibri', 12, 'bold'), command=validasenha)
-btnsubmeter.place(x = 170, y = 150, width = 55, height=25)
+btnsubmeter.grid(row=2, column=0, pady=5, padx=10)
 
-btnmostrar = tk.Button(tela_log, text ="Mostar Senha", 
+
+btnmostrar = tk.Button(frame_botao, text ="Mostar Senha", 
                       bg ='white',foreground='black', font=('Calibri', 12, 'bold'), command=mostrarsenha)
-btnmostrar.place(x = 270, y = 100, width = 120, height=25)
+btnmostrar.grid(row=2, column=1, pady=5, padx=10)
 
 txtusuario.focus_set()
 
