@@ -5,6 +5,7 @@ from tkinter import ttk
 from tkinter.ttk import Treeview
 from tkinter import messagebox
 from PIL import Image, ImageTk
+from ProdutoTreeview import ProdutoTreeview
 import conexao
 from router_path import imagemPadrao,imagemSecundaria
 
@@ -75,20 +76,6 @@ def duplo_click(event):
         txtcodigo.insert(0, values[0])
         buscar()
 
-def visualizar():
-    con=conexao.conexao()
-    #sql_txt = "select codigo,descricao,tipo,quantidade,custo,preco from prodserv order by descricao"
-    sql_txt = "select * from prodserv order by descricao"
-    rs=con.consultar_tree(sql_txt)
-
-    tree.bind("<Double-1>", duplo_click)
-    
-    for linha in tree.get_children():
-        tree.delete(linha)
-    
-    for linha in rs:
-        tree.insert("", tk.END, values=linha)
-
 def gravar():
     var_codigo = txtcodigo.get()
     var_tipo = cmbtipo.get()
@@ -117,7 +104,6 @@ def gravar():
 
     con.fechar()
 
-    visualizar()
 
 def excluir():
     var_del = messagebox.askyesno("Exclusão", "Tem certeza que deseja excluir?",parent = tela_prod)
@@ -134,7 +120,6 @@ def excluir():
 
         con.fechar()
 
-        visualizar()
     else:
         limpar()
 
@@ -211,67 +196,29 @@ btnmneu = tk.Button(tela_prod, text ="Menu",
                       bg ='yellow',foreground='black', font=('Calibri', 12), command = menu)
 btnmneu.place(x = 390, y = 280, width = 65)
 
-style = ttk.Style()
 
-style.configure("mystye.Treeview", font=("Calibri", 10))
-style.configure("mystyle.Treeview.Heading", font=("Calibri", 12, "bold"))
- 
+text_fields = [txtcodigo, cmbtipo, txtdescricao, txtquantidade, txtcusto, txtpreco]
+def atualizar_filds(fields, valores):
+    if len(valores) == len(fields):
+        for field, valor in zip(fields, valores):
+            if isinstance(field, tk.Entry):
+                field.delete(0, tk.END)
+                field.insert(0, valor)
+            elif isinstance(field, tk.Text):
+                field.delete("1.0", tk.END)
+                field.insert("1.0", valor)
+            elif isinstance(field, ttk.Combobox):
+                if valor in field['values']:
+                    field.set(valor)
+                else:
+                    print(f"Valor '{valor}' não encontrado na lista do Combobox.")
 
 
-'''
-    Colunas de produtos
-'''
-def ordenar_coluna(tree: Treeview, col_id: str, reverse: bool) -> None:
-    def tratar_valor(valor):
-            """Função para tratar o valor da célula antes da ordenação."""
-            try:
-                float(valor) 
-                if '.' in valor or valor.isdigit():
-                    return float(valor)    
-                else: 
-                    return int(valor)
-            except ValueError: 
-                return valor.lower()
-        
-    itens = [(tratar_valor(tree.set(k, col_id)), k) for k in tree.get_children("")]    
-    itens.sort(reverse=reverse, key=lambda x: x[0])
-    for index, (_, k) in enumerate(itens):
-        tree.move(k, '', index)
-    
-    tree.heading(col_id, command=lambda:ordenar_coluna(tree, col_id, not reverse))
 
-# 
-tree = ttk.Treeview(tela_prod, column=("Código", "Tipo", "Descrição", "Quantidade", "Custo", "Preço"), show='headings', style="mystyle.Treeview", padding=0)
+tree = ProdutoTreeview(tela_prod)
 
-tree.columnconfigure(0, weight=1)
-tree.rowconfigure(0, weight=1)
-
-tree.heading("#1", text="Código", command=lambda:ordenar_coluna(tree, "#1", False) )
-tree.column("#1", width = 100, anchor ='c')
-
-tree.heading("#2", text="Tipo", command=lambda:ordenar_coluna(tree, "#2", False))
-tree.column("#2", width = 80, anchor ='c')
-
-tree.heading("#3", text="Descrição", command=lambda:ordenar_coluna(tree, "#3", False))
-tree.column("#3", width = 200, anchor ='w')
-
-tree.heading("#4", text="Quantidade", command=lambda:ordenar_coluna(tree, "#4", False))
-tree.column("#4", width = 100, anchor ='c')
-
-tree.heading("#5", text="Custo", command=lambda:ordenar_coluna(tree, "#5", False))
-tree.column("#5", width = 100, anchor ='c')
-
-tree.heading("#6", text="Preço", command=lambda:ordenar_coluna(tree, "#6", False))
-tree.column("#6", width = 100, anchor ='c')
-
- 
-tree.place(x=50,y=360,height=120)
-
-scrollbar = ttk.Scrollbar(tela_prod, orient=tk.VERTICAL, command=tree.yview)
-tree.configure(yscroll=scrollbar.set)
-scrollbar.place(x = 731, y = 360,height=120)
-
-visualizar()
+tree.tree.bind("<Double-1>", lambda event: atualizar_filds(text_fields,tree.duplo_click(event))
+)
 
 txtcodigo.focus_set()
 

@@ -12,6 +12,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from router_path import dir, imagemPadrao, imagemSecundaria
 from ClienteTreeview import ClienteTreeview
+from ProdutoTreeview import ProdutoTreeview
 
 import locale
 
@@ -29,7 +30,7 @@ tkimage_cli = ImageTk.PhotoImage(Image.open(imagemSecundaria).resize((tela_venda
 tk.Label(tela_venda, image=tkimage_cli).pack()
 
 
-def abrir_popup_busca():
+def abrir_popup_busca_cliente():
     popup_busca = tk.Toplevel(tela_venda)
     popup_busca.title("Buscar Cliente")
     popup_busca.geometry("700x500")
@@ -43,8 +44,31 @@ def abrir_popup_busca():
         if valores:
             txtcodcli.delete(0, tk.END)
             txtcodcli.insert(0, valores[0])
-            txtcodcli.focus
         popup_busca.destroy()
+        event= 36
+        txtcodcli.focus
+        bus_cli()
+    tree.tree.bind("<Double-1>", handle_duplo_click)
+
+def abrir_popup_busca_prodserv():
+    popup_busca = tk.Toplevel(tela_venda)
+    popup_busca.title("Buscar Cliente")
+    popup_busca.geometry("700x500")
+    popup_busca.resizable(True, True)
+    tree = ProdutoTreeview(popup_busca)
+    tree.tree.place(x=50, y=50, width=600, height=300)
+    
+    def handle_duplo_click(event):
+        valores = tree.duplo_click(event)
+        print(f"Dados selecionados: {valores}")
+        if valores:
+            txtcodprod.delete(0, tk.END)
+            txtcodprod.insert(0, valores[0])
+            txtcodprod.focus
+        popup_busca.destroy()
+        event= 36
+        txtcodcli.focus
+        bus_prod()
     tree.tree.bind("<Double-1>", handle_duplo_click)
 
 
@@ -64,17 +88,16 @@ def numeracao():
     
 
 def limpar(event=None):
-    if event and (event.keycode == 113 or event.keycode == 68):
-        print("Limpar acionado!")
-        txtdescricao.config(state= "normal")
-        txtvlrunit.config(state= "normal")
-        txtvalor.config(state= "normal")
-        txtcodprod.delete(0,"end")
-        txtdescricao.delete(0,"end")
-        txtqtde.delete(0,"end")
-        txtvlrunit.delete(0,"end")
-        txtvalor.delete("0","end")
-        txtcodprod.focus_set()
+    print("Limpar acionado!")
+    txtdescricao.config(state= "normal")
+    txtvlrunit.config(state= "normal")
+    txtvalor.config(state= "normal")
+    txtcodprod.delete(0,"end")
+    txtdescricao.delete(0,"end")
+    txtqtde.delete(0,"end")
+    txtvlrunit.delete(0,"end")
+    txtvalor.delete("0","end")
+    txtcodprod.focus_set()
 
 def limpar_cab():
     txtcodcli.config(state= "normal")
@@ -118,10 +141,9 @@ def gravar_lin():
     
 
 def finalizar_linha(event:None):
-    if event.keycode == 112 or event.keycode == 67:
-        gravar_lin()
-        visualizar()
-        total()
+    gravar_lin()
+    visualizar()
+    total()
 
 
 def excluir():
@@ -230,82 +252,68 @@ def gravar():
 
 
 def bus_cli(event=None):
-    print(event.keycode)
-    if event.keycode == 13 or event.keycode == 36:
-        print('Você digitou enter')
-
-        var_codcli = txtcodcli.get()
-     
-        con=conexao.conexao()
-        sql_txt = f"select nome from clientes where codigo = {var_codcli}"
-        rs=con.consultar(sql_txt)
-
-        if rs:
-            txtnomecli.config(state= "normal")
-            
-            txtnomecli.delete(0,"end")
-            txtnomecli.insert(0, rs[0])
-            
-            txtnomecli.config(state= "disabled")
-            
-            txtcodprod.focus_set()
-            
-        else:
-            messagebox.showwarning("Aviso", "Cliente Não Encontrado",parent = tela_venda)
-
-            txtnomecli.config(state= "normal")
-            
-            txtcodcli.delete(0,"end")
-            txtnomecli.delete(0,"end")
-
-            txtnomecli.config(state= "disabled")
-            
-            txtcodcli.focus_set()
-            
-        con.fechar()
+      print('Você digitou enter')
+      var_codcli = txtcodcli.get()
+    
+      con=conexao.conexao()
+      sql_txt = f"select nome from clientes where codigo = {var_codcli}"
+      rs=con.consultar(sql_txt)
+      if rs:
+          txtnomecli.config(state= "normal")
+          
+          txtnomecli.delete(0,"end")
+          txtnomecli.insert(0, rs[0])
+          
+          txtnomecli.config(state= "disabled")
+          
+          txtcodprod.focus_set()
+          
+      else:
+          messagebox.showwarning("Aviso", "Cliente Não Encontrado",parent = tela_venda)
+          txtnomecli.config(state= "normal")
+          
+          txtcodcli.delete(0,"end")
+          txtnomecli.delete(0,"end")
+          txtnomecli.config(state= "disabled")
+          
+          txtcodcli.focus_set()
+          
+      con.fechar()
 
 def bus_prod(event=None):
-    if event.keycode == 13 or event.keycode == 36:
-        var_codprod = txtcodprod.get()
-     
-        con=conexao.conexao()
-        sql_txt = f"select descricao, preco from prodserv where codigo = {var_codprod}"
-        rs=con.consultar(sql_txt)
-
-        if rs:
-            txtdescricao.config(state= "normal")
-            txtdescricao.delete(0,"end")
-            txtdescricao.insert(0, rs[0])
-            txtdescricao.config(state= "disabled")
-
-            lblvlrunit.config(state= "normal")
-            txtvlrunit.delete(0,"end")
-            txtvlrunit.insert(0, rs[1])
-            txtvlrunit.config(state= "disabled")
-
-            txtqtde.focus_set()
-
-        else:
-            txtcodprod.focus_set()
-            messagebox.showwarning("Aviso", "Produto não Encontrado",parent = tela_venda)
-            
-        con.fechar()
+    var_codprod = txtcodprod.get()
+ 
+    con=conexao.conexao()
+    sql_txt = f"select descricao, preco from prodserv where codigo = {var_codprod}"
+    rs=con.consultar(sql_txt)
+    if rs:
+        txtdescricao.config(state= "normal")
+        txtdescricao.delete(0,"end")
+        txtdescricao.insert(0, rs[0])
+        txtdescricao.config(state= "disabled")
+        lblvlrunit.config(state= "normal")
+        txtvlrunit.delete(0,"end")
+        txtvlrunit.insert(0, rs[1])
+        txtvlrunit.config(state= "disabled")
+        txtqtde.focus_set()
+    else:
+        txtcodprod.focus_set()
+        messagebox.showwarning("Aviso", "Produto não Encontrado",parent = tela_venda)
+        
+    con.fechar()
 
 def entrar_qtde(event=None):
-    if event.keycode == 13 or event.keycode == 36:
-        txtvalor.config(state= "normal")
-        
-        qtde = float(txtqtde.get())
-        vrl_unit = float(txtvlrunit.get())
-
-        if qtde>0 and vrl_unit>0:
-            valor = qtde * vrl_unit
-
+    txtvalor.config(state="normal")
+    qtde = float(txtqtde.get())
+    vrl_unit = float(txtvlrunit.get())
+    if qtde > 0 and vrl_unit > 0:
+        valor = qtde * vrl_unit
+        txtvalor.delete(0, tk.END)
         txtvalor.insert(0, valor)
-
-        txtvalor.config(state= "disabled")
-
         btnincluir.focus_set()
+    else:
+        txtvalor.delete(0, tk.END)
+
 
 def cancelar():
     var_del = messagebox.askyesno("Cancelar", "Deseja Cancelar a Venda?",parent = tela_venda)
@@ -434,10 +442,10 @@ lblcodcli.place(x = 50, y = 60, width = 100, height=20)
 
 txtcodcli = tk.Entry(tela_venda)
 txtcodcli.place(x = 160, y = 60, width = 100, height=20)
-txtcodcli.bind('<Key>', bus_cli)
+txtcodcli.bind('<Return>', bus_cli)
 
 btnbuscli = tk.Button(tela_venda, text ="Buscar cliente", 
-                      bg ='gold',foreground='black', font=('Calibri', 12, 'bold'), command=abrir_popup_busca)
+                      bg ='gold',foreground='black', font=('Calibri', 12, 'bold'), command=abrir_popup_busca_cliente)
 btnbuscli.place(x = 280, y = 50, width = 120, height=30)
 
 lblnomecli = tk.Label(tela_venda, text ="Nome Cliente:", font=('Calibri', 12, 'bold'), bg = 'lightskyblue', fg = 'black', anchor = 'w')
@@ -450,9 +458,13 @@ txtnomecli.config(state= "disabled")
 lblcodprod = tk.Label(tela_venda, text = "Cód. Prod:", font=('Calibri', 10, 'bold'), bg = 'lightskyblue', fg = 'black', anchor = 'w')
 lblcodprod.place(x = 50, y = 160, width = 100, height=20)
 
+btnbuscli = tk.Button(tela_venda, text ="Buscar cliente", 
+                      bg ='gold',foreground='black', font=('Calibri', 12, 'bold'), command=abrir_popup_busca_prodserv)
+btnbuscli.place(x = 280, y = 160, width = 120, height=30)
+
 txtcodprod =  tk.Entry(tela_venda)
 txtcodprod.place(x = 160, y = 160, width = 100, height=20)
-txtcodprod.bind('<Key>', bus_prod)
+txtcodprod.bind('<Return>', bus_prod)
 
 lbldescricao = tk.Label(tela_venda, text = "Descrição:", font=('Calibri', 10, 'bold'), bg = 'lightskyblue', fg = 'black', anchor = 'w')
 lbldescricao.place(x = 50, y = 200, width = 100, height=20)
@@ -466,7 +478,15 @@ lblqtde.place(x = 50, y = 240, width = 100, height=20)
 
 txtqtde =  tk.Entry(tela_venda)
 txtqtde.place(x = 160, y = 240, width = 100, height=20)
-txtqtde.bind('<Key>', entrar_qtde)
+txtqtde.bind('<FocusOut>', entrar_qtde)
+txtqtde.bind('<Return>', entrar_qtde)
+
+btnincluir = tk.Button(tela_venda, text ="Incluir - F1", 
+                      bg ='gold',foreground='black', font=('Calibri', 12, 'bold'), command = gravar_lin)
+btnincluir.place(x = 160, y = 290, width = 100, height=30)
+tela_venda.bind('<F1>', finalizar_linha)
+btnincluir.bind('<Button-1>', finalizar_linha)
+btnincluir.bind('<Return>', finalizar_linha)
 
 lblvlrunit = tk.Label(tela_venda, text = "Valor Unit:", font=('Calibri', 10, 'bold'), bg = 'lightskyblue', fg = 'black', anchor = 'w')
 lblvlrunit.place(x = 280, y = 240, width = 100, height=20)
@@ -489,15 +509,10 @@ txt_total =  tk.Entry(tela_venda, justify='center', bg="silver", fg="blue",  fon
 txt_total.place(x = 650, y = 520, width = 150, height=40)
 txt_total.config(state= "readonly")
 
-btnincluir = tk.Button(tela_venda, text ="Incluir - F1", 
-                      bg ='gold',foreground='black', font=('Calibri', 12, 'bold'), command = gravar_lin)
-btnincluir.place(x = 160, y = 290, width = 100, height=30)
-tela_venda.bind('<F1>', finalizar_linha)
-
-
 btnlimpar = tk.Button(tela_venda, text ="Limpar - F2", 
                       bg ='gold',foreground='black', font=('Calibri', 12, 'bold'), command=limpar)
 btnlimpar.place(x = 390, y = 290, width = 100, height=30)
+btnlimpar.bind('<Button-1>', limpar)
 tela_venda.bind('<F2>', limpar)
 
 btnexcluir = tk.Button(tela_venda, text ="Excluir", 
