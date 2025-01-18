@@ -44,33 +44,29 @@ def numeracao():
     txtnumvenda.config(state= "disabled")
     
 
-def limpar():
-
-    txtdescricao.config(state= "normal")
-    txtvlrunit.config(state= "normal")
-    txtvalor.config(state= "normal")
-
-    txtcodcli.delete(0, "end")
-    txtcodprod.delete(0,"end")
-    txtdescricao.delete(0,"end")
-    txtqtde.delete(0,"end")
-    txtvlrunit.delete(0,"end")
-    txtvalor.delete("0","end")
-    txtcodcli.focus_set()
+def limpar(event=None):
+    if event and (event.keycode == 113 or event.keycode == 68):
+        print("Limpar acionado!")
+        txtdescricao.config(state= "normal")
+        txtvlrunit.config(state= "normal")
+        txtvalor.config(state= "normal")
+        txtcodprod.delete(0,"end")
+        txtdescricao.delete(0,"end")
+        txtqtde.delete(0,"end")
+        txtvlrunit.delete(0,"end")
+        txtvalor.delete("0","end")
+        txtcodprod.focus_set()
 
 def limpar_cab():
-
     txtcodcli.config(state= "normal")
-    txtnomecli.config(state= "normal")
-
-   
+    txtnomecli.config(state= "normal") 
     txtnumvenda.delete(0,"end")
     txtnomecli.delete(0,"end")
     txtcodcli.delete(0,"end")
     txtcodcli.focus_set()
 
 
-def gravar_lin(event=None):
+def gravar_lin():
     num_venda = txtnumvenda.get()
     var_codcli = txtcodcli.get()
     var_codprod = txtcodprod.get()
@@ -78,36 +74,35 @@ def gravar_lin(event=None):
     var_vlrunit = txtvlrunit.get()
     var_valor = txtvalor.get()
 
-    if event.keycode == 112 or event.keycode == 67:
-        if var_codcli == "":
-             messagebox.showwarning("Aviso", "Favor preencher o código do cliente",parent = tela_venda)
-             txtcodcli.focus_set()
-        else:
-             if var_codprod == "":
-                 messagebox.showwarning("Aviso", "Favor preencher o código do produto" ,parent = tela_venda)
-                 txtcodprod.focus_set()
+    if var_codcli == "":
+         messagebox.showwarning("Aviso", "Favor preencher o código do cliente",parent = tela_venda)
+         txtcodcli.focus_set()
+    else:
+         if var_codprod == "":
+             messagebox.showwarning("Aviso", "Favor preencher o código do produto" ,parent = tela_venda)
+             txtcodprod.focus_set()
+         else:
+             if var_qtde == "":
+                 messagebox.showwarning("Aviso", "Favor preencher a quantidade" ,parent = tela_venda)
+                 txtqtde.focus_set()
              else:
-                 if var_qtde == "":
-                     messagebox.showwarning("Aviso", "Favor preencher a quantidade" ,parent = tela_venda)
-                     txtqtde.focus_set()
+                 con=conexao.conexao()
+                 sql_txt = f"select IFNULL(max(lin_venda),0)+1 as lin_venda from vendas_lin where num_venda = {num_venda}"
+                 rs=con.consultar(sql_txt)
+                 var_lin_venda = rs[0]
+                 sql_text = f"insert into vendas_lin (num_venda, lin_venda, codigo_prod, quantidade, valor_unit, valor) values ({num_venda},'{var_lin_venda}','{var_codprod}','{var_qtde}','{var_vlrunit}','{var_valor}')"
+                 if con.gravar(sql_text):
+                     limpar()
                  else:
-                     con=conexao.conexao()
-                     sql_txt = f"select IFNULL(max(lin_venda),0)+1 as lin_venda from vendas_lin where num_venda = {num_venda}"
+                     print(sql_text)
 
-                     rs=con.consultar(sql_txt)
-                     var_lin_venda = rs[0]
+    
 
-                     sql_text = f"insert into vendas_lin (num_venda, lin_venda, codigo_prod, quantidade, valor_unit, valor) values ({num_venda},'{var_lin_venda}','{var_codprod}','{var_qtde}','{var_vlrunit}','{var_valor}')"
-
-                     if con.gravar(sql_text):
-                         limpar()
-                     else:
-                         print(sql_text)
-
-                     con.fechar()
-
-                     visualizar()
-                     total()
+def finalizar_linha(event:None):
+    if event.keycode == 112 or event.keycode == 67:
+        gravar_lin()
+        visualizar()
+        total()
 
 
 def excluir():
@@ -164,11 +159,10 @@ def total():
 
     if rs:
         txt_total.config(state= "normal")
-
+        # txt_total.config(state= "readonly")
         txt_total.delete("0","end")
         txt_total.insert(0, rs[0])
         
-        #txt_total.config(state= "readonly")
 
     var_total = float(txt_total.get())
     
@@ -473,15 +467,16 @@ txt_total =  tk.Entry(tela_venda, justify='center', bg="silver", fg="blue",  fon
 txt_total.place(x = 650, y = 520, width = 150, height=40)
 txt_total.config(state= "readonly")
 
-btnincluir = tk.Button(tela_venda, text ="Incluir", 
+btnincluir = tk.Button(tela_venda, text ="Incluir - F1", 
                       bg ='gold',foreground='black', font=('Calibri', 12, 'bold'), command = gravar_lin)
 btnincluir.place(x = 160, y = 290, width = 100, height=30)
-btnincluir.bind('<Key>', gravar_lin)
+tela_venda.bind('<F1>', finalizar_linha)
 
 
-btnlimpar = tk.Button(tela_venda, text ="Limpar", 
-                      bg ='gold',foreground='black', font=('Calibri', 12, 'bold'), command = limpar)
+btnlimpar = tk.Button(tela_venda, text ="Limpar - F2", 
+                      bg ='gold',foreground='black', font=('Calibri', 12, 'bold'), command=limpar)
 btnlimpar.place(x = 390, y = 290, width = 100, height=30)
+tela_venda.bind('<F2>', limpar)
 
 btnexcluir = tk.Button(tela_venda, text ="Excluir", 
                       bg ='gold',foreground='black', font=('Calibri', 12, 'bold'), command = excluir)
