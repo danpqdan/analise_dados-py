@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+
 import platform
 import conexao
 import tkinter as tk
@@ -21,6 +22,9 @@ if __name__ == '__main__':
     tela_venda = tk.Tk()
 else:
     tela_venda = tk.Toplevel()
+
+larguraTela = tela_venda.winfo_screenwidth()
+alturaTela = tela_venda.winfo_screenheight()
 
 tkimage_cli = ImageTk.PhotoImage(Image.open(imagemSecundaria).resize((tela_venda.winfo_screenwidth(), tela_venda.winfo_screenheight())))
 tk.Label(tela_venda, image=tkimage_cli).pack()
@@ -46,13 +50,13 @@ def limpar():
     txtvlrunit.config(state= "normal")
     txtvalor.config(state= "normal")
 
-    
+    txtcodcli.delete(0, "end")
     txtcodprod.delete(0,"end")
     txtdescricao.delete(0,"end")
     txtqtde.delete(0,"end")
     txtvlrunit.delete(0,"end")
     txtvalor.delete("0","end")
-    txtcodprod.focus_set()
+    txtcodcli.focus_set()
 
 def limpar_cab():
 
@@ -66,7 +70,7 @@ def limpar_cab():
     txtcodcli.focus_set()
 
 
-def gravar_lin():
+def gravar_lin(event=None):
     num_venda = txtnumvenda.get()
     var_codcli = txtcodcli.get()
     var_codprod = txtcodprod.get()
@@ -74,35 +78,37 @@ def gravar_lin():
     var_vlrunit = txtvlrunit.get()
     var_valor = txtvalor.get()
 
-    if var_codcli == "":
-         messagebox.showwarning("Aviso", "Favor preencher o código do cliente",parent = tela_venda)
-         txtcodcli.focus_set()
-    else:
-         if var_codprod == "":
-             messagebox.showwarning("Aviso", "Favor preencher o código do produto" ,parent = tela_venda)
-             txtcodprod.focus_set()
-         else:
-             if var_qtde == "":
-                 messagebox.showwarning("Aviso", "Favor preencher a quantidade" ,parent = tela_venda)
-                 txtqtde.focus_set()
+    if event.keycode == 112 or event.keycode == 67:
+        if var_codcli == "":
+             messagebox.showwarning("Aviso", "Favor preencher o código do cliente",parent = tela_venda)
+             txtcodcli.focus_set()
+        else:
+             if var_codprod == "":
+                 messagebox.showwarning("Aviso", "Favor preencher o código do produto" ,parent = tela_venda)
+                 txtcodprod.focus_set()
              else:
-                 con=conexao.conexao()
-                 sql_txt = f"select IFNULL(max(lin_venda),0)+1 as lin_venda from vendas_lin where num_venda = {num_venda}"
-
-                 rs=con.consultar(sql_txt)
-                 var_lin_venda = rs[0]
-
-                 sql_text = f"insert into vendas_lin (num_venda, lin_venda, codigo_prod, quantidade, valor_unit, valor) values ({num_venda},'{var_lin_venda}','{var_codprod}','{var_qtde}','{var_vlrunit}','{var_valor}')"
-
-                 if con.gravar(sql_text):
-                     limpar()
+                 if var_qtde == "":
+                     messagebox.showwarning("Aviso", "Favor preencher a quantidade" ,parent = tela_venda)
+                     txtqtde.focus_set()
                  else:
-                     print(sql_text)
+                     con=conexao.conexao()
+                     sql_txt = f"select IFNULL(max(lin_venda),0)+1 as lin_venda from vendas_lin where num_venda = {num_venda}"
 
-                 con.fechar()
+                     rs=con.consultar(sql_txt)
+                     var_lin_venda = rs[0]
 
-                 visualizar()
-                 total()
+                     sql_text = f"insert into vendas_lin (num_venda, lin_venda, codigo_prod, quantidade, valor_unit, valor) values ({num_venda},'{var_lin_venda}','{var_codprod}','{var_qtde}','{var_vlrunit}','{var_valor}')"
+
+                     if con.gravar(sql_text):
+                         limpar()
+                     else:
+                         print(sql_text)
+
+                     con.fechar()
+
+                     visualizar()
+                     total()
+
 
 def excluir():
     num_venda = txtnumvenda.get()
@@ -212,7 +218,7 @@ def gravar():
 
 def bus_cli(event=None):
     print(event.keycode)
-    if event.keycode==13:
+    if event.keycode == 13 or event.keycode == 36:
         print('Você digitou enter')
 
         var_codcli = txtcodcli.get()
@@ -246,8 +252,7 @@ def bus_cli(event=None):
         con.fechar()
 
 def bus_prod(event=None):
-    if event.keycode==13:
-
+    if event.keycode == 13 or event.keycode == 36:
         var_codprod = txtcodprod.get()
      
         con=conexao.conexao()
@@ -274,7 +279,7 @@ def bus_prod(event=None):
         con.fechar()
 
 def entrar_qtde(event=None):
-    if event.keycode==13 or event.keycode==9:
+    if event.keycode == 13 or event.keycode == 36:
         txtvalor.config(state= "normal")
         
         qtde = float(txtqtde.get())
@@ -375,8 +380,10 @@ def imprimir():
 
     cnv.save()
 
-    os.startfile("vendas.pdf")
-
+    if platform.system() == "Windows":
+        os.startfile("vendas.pdf")
+    else:
+        os.system("xdg-open vendas.pdf")
 def baixa_estoque():
    for child in tree.get_children():
 
@@ -469,6 +476,7 @@ txt_total.config(state= "readonly")
 btnincluir = tk.Button(tela_venda, text ="Incluir", 
                       bg ='gold',foreground='black', font=('Calibri', 12, 'bold'), command = gravar_lin)
 btnincluir.place(x = 160, y = 290, width = 100, height=30)
+btnincluir.bind('<Key>', gravar_lin)
 
 
 btnlimpar = tk.Button(tela_venda, text ="Limpar", 
