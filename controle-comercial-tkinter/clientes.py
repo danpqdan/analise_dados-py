@@ -174,9 +174,7 @@ btnmenu.place(x = 450, y = 320, width = 65)
 
 text_fields = [txtcodigo, txtnome, txttelefone, txtemail, txtobservacao]
 tree = ClienteTreeview(tela_cli)
-tree.tree.bind("<Double-1>", lambda event: atualizar_filds(text_fields, tree.duplo_click(event, tkview=None)))
-valores = tree.duplo_click() 
-print(valores)
+tree.tree.bind("<Double-1>", lambda event: atualizar_filds(text_fields, tree.duplo_click(event)))
 
 def atualizar_filds(fields, valores):
     if len(valores) == len(fields):
