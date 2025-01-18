@@ -6,7 +6,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 import conexao  
 from router_path import dir, imagemPadrao, imagemSecundaria
-
+from ClienteTreeview import ClienteTreeview
 
 def novo():
     con=conexao.conexao()
@@ -25,7 +25,6 @@ def limpar():
     txttelefone.delete(0,"end")
     txtemail.delete(0,"end")
     txtobservacao.delete("1.0","end")
-    txt_pes_nome.delete(0,"end")
     novo()
 
 def buscar():
@@ -50,46 +49,6 @@ def buscar():
         txtcodigo.focus_set()
 
     con.fechar()
-
-def duplo_click(event):
-    limpar()
-    item = tree.item(tree.selection())
-    txtcodigo.delete(0,"end")
-    txtcodigo.insert(0, item['values'][0])
-    buscar()
-
-def visualizar():
-    con=conexao.conexao()
-    sql_txt = f"select * from clientes "
-    rs=con.consultar_tree(sql_txt)
-
-    tree.bind("<Double-1>", duplo_click)
-    
-    for linha in tree.get_children():
-        tree.delete(linha)
-    
-    for linha in rs:
-        tree.insert("", tk.END, values=linha)
-
-    con.fechar()
-
-def pesquisar_nome(p):
-    con=conexao.conexao()
-    sql_txt = f"select * from clientes where nome like '%{p}%'"
-    
-    rs=con.consultar_tree(sql_txt)
-
-    tree.bind("<Double-1>", duplo_click)
-    
-    for linha in tree.get_children():
-        tree.delete(linha)
-    
-    for linha in rs:
-        tree.insert("", tk.END, values=linha)
-
-    con.fechar()   
-
-    return True
 
 def gravar():
     var_codigo = txtcodigo.get()
@@ -118,8 +77,6 @@ def gravar():
 
     con.fechar()
 
-    visualizar()
-
 def excluir():
     var_del = messagebox.askyesno("Exclusão", "Tem certeza que deseja excluir?", parent = tela_cli)
     if var_del == True:
@@ -136,10 +93,12 @@ def excluir():
             
         con.fechar()
 
-        visualizar()
         limpar()
     else:
         limpar()
+
+
+
 
 def menu():
     tela_cli.destroy()
@@ -149,8 +108,6 @@ if __name__ == '__main__':
     tela_cli = tk.Tk()
 else:
     tela_cli = tk.Toplevel()
-
-pes_nome = tela_cli.register(func=pesquisar_nome)
     
 tela_cli.geometry('1920x1080+0+0')
 if platform.system() == "Windows":
@@ -199,11 +156,6 @@ lblobservacao.place(x = 50, y = 220, width=85, height = 25)
 txtobservacao= tk.Text(tela_cli, font=('Calibri', 12))
 txtobservacao.place(x=150, y=220, width=360, height=80)
 
-lbl_pes_nome = tk.Label(tela_cli, text ="Pesquisar por Nome :", font=('Calibri', 12, 'bold'), anchor = "w")
-lbl_pes_nome.place(x = 50, y = 390, width=200, height = 25)
-txt_pes_nome = tk.Entry(tela_cli, width = 35, font=('Calibri', 12),validate='key', validatecommand=(pes_nome,'%P'))
-txt_pes_nome.place(x = 210, y = 390, width = 360, height = 25)
-
 btngravar = tk.Button(tela_cli, text ="Gravar", 
                        bg ='black',foreground='white', font=('Calibri', 12, 'bold'), command = gravar)
 btngravar.place(x = 150, y = 320, width = 65)
@@ -220,39 +172,22 @@ btnmenu = tk.Button(tela_cli, text ="Menu",
                        bg ='yellow',foreground='black', font=('Calibri', 12, 'bold'), command = menu)
 btnmenu.place(x = 450, y = 320, width = 65)
 
-style = ttk.Style()
-style.configure("mystyle.Treeview", font=("Calibri", 10))
-style.configure("mystyle.Treeview.Heading", font=("Calibri", 12, "bold"))
+text_fields = [txtcodigo, txtnome, txttelefone, txtemail, txtobservacao]
+tree = ClienteTreeview(tela_cli)
+tree.tree.bind("<Double-1>", lambda event: atualizar_filds(text_fields, tree.duplo_click(event, tkview=None)))
+valores = tree.duplo_click() 
+print(valores)
 
-tree = ttk.Treeview(tela_cli, column=("c1", "c2", "c3", "c4", "c5"), show='headings', style="mystyle.Treeview")
-
-tree.column("#1")
-tree.heading("#1", text="Código")
-tree.column("#1", width = 100, anchor ='c')
-
-tree.column("#2")
-tree.heading("#2", text="Nome")
-tree.column("#2", width = 200, anchor ='c')
-
-tree.column("#3")
-tree.heading("#3", text="Telefone")
-tree.column("#3", width = 100, anchor ='w')
-
-tree.column("#4")
-tree.heading("#4", text="E-mail")
-tree.column("#4", width = 150, anchor ='c')
-
-tree.column("#5")
-tree.heading("#5", text="Observação")
-tree.column("#5", width = 300, anchor ='c')
-
-tree.place(x=50,y=420,height=120)
-
-scrollbar = ttk.Scrollbar(tela_cli, orient=tk.VERTICAL, command=tree.yview)
-tree.configure(yscroll=scrollbar.set)
-scrollbar.place(x = 901, y = 420,height=120)
-
-visualizar()
+def atualizar_filds(fields, valores):
+    if len(valores) == len(fields):
+        for field, valor in zip(fields, valores):
+            if isinstance(field, tk.Entry):
+                field.delete(0, tk.END)
+                field.insert(0, valor)
+            elif isinstance(field, tk.Text):
+                field.delete("1.0", tk.END)
+                field.insert("1.0", valor)
+            
 novo()
 
 tela_cli.mainloop()

@@ -11,8 +11,7 @@ from PIL import Image, ImageTk
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from router_path import dir, imagemPadrao, imagemSecundaria
-
-
+from ClienteTreeview import ClienteTreeview
 
 import locale
 
@@ -28,6 +27,26 @@ alturaTela = tela_venda.winfo_screenheight()
 
 tkimage_cli = ImageTk.PhotoImage(Image.open(imagemSecundaria).resize((tela_venda.winfo_screenwidth(), tela_venda.winfo_screenheight())))
 tk.Label(tela_venda, image=tkimage_cli).pack()
+
+
+def abrir_popup_busca():
+    popup_busca = tk.Toplevel(tela_venda)
+    popup_busca.title("Buscar Cliente")
+    popup_busca.geometry("700x500")
+    popup_busca.resizable(True, True)
+    tree = ClienteTreeview(popup_busca)
+    tree.tree.place(x=50, y=50, width=600, height=300)
+    
+    def handle_duplo_click(event):
+        valores = tree.duplo_click(event)
+        print(f"Dados selecionados: {valores}")
+        if valores:
+            txtcodcli.delete(0, tk.END)
+            txtcodcli.insert(0, valores[0])
+            txtcodcli.focus
+        popup_busca.destroy()
+    tree.tree.bind("<Double-1>", handle_duplo_click)
+
 
 def numeracao():
 
@@ -403,20 +422,23 @@ else:
 tela_venda['bg'] = "dimgray"
 tela_venda.title("Controle Comercial - Vendas")
 
-lblnumvenda = tk.Label(tela_venda, text ="Núm. Venda:", font=('Calibri', 12, 'bold'), bg = 'lightskyblue', fg = 'black', anchor = 'w')
+
+lblnumvenda = tk.Label(tela_venda, text="Núm. Venda:", font=('Calibri', 12, 'bold'), bg='lightskyblue', fg='black', anchor='w')
 lblnumvenda.place(x = 50, y = 25, width = 100, height=20)
 
-txtnumvenda =  tk.Entry(tela_venda, justify='center', font=('Calibri', 12, 'bold'))
+txtnumvenda = tk.Entry(tela_venda, justify='center', font=('Calibri', 12, 'bold'))
 txtnumvenda.place(x = 160, y = 25, width = 100, height=20)
 
-
-lblcodcli = tk.Label(tela_venda, text ="Cod. Cliente:", font=('Calibri', 12, 'bold'), bg = 'lightskyblue', fg = 'black', anchor = 'w')
+lblcodcli = tk.Label(tela_venda, text="Cod. Cliente:", font=('Calibri', 12, 'bold'), bg='lightskyblue', fg='black', anchor='w')
 lblcodcli.place(x = 50, y = 60, width = 100, height=20)
 
-
-txtcodcli =  tk.Entry(tela_venda)
+txtcodcli = tk.Entry(tela_venda)
 txtcodcli.place(x = 160, y = 60, width = 100, height=20)
 txtcodcli.bind('<Key>', bus_cli)
+
+btnbuscli = tk.Button(tela_venda, text ="Buscar cliente", 
+                      bg ='gold',foreground='black', font=('Calibri', 12, 'bold'), command=abrir_popup_busca)
+btnbuscli.place(x = 280, y = 50, width = 120, height=30)
 
 lblnomecli = tk.Label(tela_venda, text ="Nome Cliente:", font=('Calibri', 12, 'bold'), bg = 'lightskyblue', fg = 'black', anchor = 'w')
 lblnomecli.place(x = 50, y = 100, width = 100, height=20)

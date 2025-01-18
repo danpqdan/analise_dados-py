@@ -2,13 +2,12 @@
 import sys
 import tkinter as tk
 from tkinter import * 
-from PIL import Image, ImageTk,ImageDraw
+from PIL import Image, ImageTk
 import conexao 
 from router_path import imagemSecundaria, pathMenu
 
 if __name__ == '__main__': 
     tela_log = tk.Tk()
-    
 else:
     tela_log = tk.Toplevel()
 
