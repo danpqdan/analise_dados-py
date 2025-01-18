@@ -26,6 +26,9 @@ def validasenha():
 
     try:
         con=conexao.conexao()
+        if not con.db:
+            raise ConnectionError("Não foi possível conectar ao banco de dados.")
+        
         sql_txt=(f"select usuario, nome from login where usuario = '{var_login}'"
                  + f"and CAST(aes_decrypt(senha,'chave') as char) = '{var_senha}'")
                  
@@ -41,11 +44,11 @@ def validasenha():
         else:
            lblresult = tk.Label(tela_log, text ="Usuario ou Senha Invalida", foreground='red')
            lblresult.place(x = 125, y = 130)              
-    except:
-        db.rollback()
-        print("Erro na leitura da tabela de login")
-        
-    con.fechar()
+    except Exception as e:
+        print(f"Erro: {e}")
+    finally:
+        if 'con' in locals() and con.db:
+            con.fechar()
 
 def mostrarsenha():
     if txtsenha.cget('show') == '':
