@@ -247,3 +247,9 @@ txtcodigo.focus_set()
 
 tela_prod.mainloop()
 
+def on_column_click(event):
+    col_id = tree.identify_column(event.x)
+    print(f'Coluna clicada: {col_id}')
+
+tree.bind("<Button-1>", on_column_click) 
+
