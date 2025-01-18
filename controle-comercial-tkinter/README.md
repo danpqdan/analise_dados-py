@@ -12,3 +12,6 @@
         tela_login.attributes('-zoomed', True)
 ```
 
+## MERGE: 
+### -> ADD: Funcionalidade de gerenciamente de cliente
+### -> REF: Refatorado arvore visual para ClienteTreeview
