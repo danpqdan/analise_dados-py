@@ -64,9 +64,12 @@ def buscar():
 
 def duplo_click(event):
     limpar()
-    item = tree.item(tree.selection())
-    txtcodigo.insert(0, item['values'][0])
-    buscar()
+    item = tree.selection()
+    if item:
+        values = tree.item(item, "values")
+        txtcodigo.delete(0, tk.END)
+        txtcodigo.insert(0, values[0])
+        buscar()
 
 def visualizar():
     con=conexao.conexao()
@@ -214,30 +217,24 @@ tree = ttk.Treeview(tela_prod, column=("c1", "c2", "c3", "c4", "c5", "c6"), show
 tree.columnconfigure(0, weight=1)
 tree.rowconfigure(0, weight=1)
 
-tree.column("#1")
 tree.heading("#1", text="Código")
 tree.column("#1", width = 100, anchor ='c')
 
-tree.column("#2")
 tree.heading("#2", text="Tipo")
 tree.column("#2", width = 80, anchor ='c')
 
-tree.column("#3")
 tree.heading("#3", text="Descrição")
 tree.column("#3", width = 200, anchor ='w')
 
-tree.column("#4")
 tree.heading("#4", text="Quantidade")
 tree.column("#4", width = 100, anchor ='c')
 
-tree.column("#5")
 tree.heading("#5", text="Custo")
 tree.column("#5", width = 100, anchor ='c')
 
-tree.column("#6")
 tree.heading("#6", text="Preço")
 tree.column("#6", width = 100, anchor ='c')
-
+ 
 tree.place(x=50,y=360,height=120)
 
 scrollbar = ttk.Scrollbar(tela_prod, orient=tk.VERTICAL, command=tree.yview)
