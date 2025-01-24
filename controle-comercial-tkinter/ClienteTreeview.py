@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-import conexao
+from conexao import Conexao
 
 class ClienteTreeview:
     def __init__(self, parent):
@@ -70,7 +70,7 @@ class ClienteTreeview:
         self.visualizar()
 
     def pesquisar_nome(self, p):
-        con = conexao.conexao()
+        con = Conexao()
         try:
             sql_txt = f"select * from clientes where nome like '%{p}%'"
             rs = con.consultar_tree(sql_txt)
@@ -93,7 +93,7 @@ class ClienteTreeview:
             return self.selected_data
 
     def visualizar(self):
-        con = conexao.conexao()
+        con = Conexao()
         sql_txt = f"select * from clientes"
         rs = con.consultar_tree(sql_txt)
 

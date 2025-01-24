@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-import conexao
+from conexao import Conexao
 
 class ProdutoTreeview:
     def __init__(self, parent):
@@ -71,7 +71,7 @@ class ProdutoTreeview:
         self.visualizar()
 
     def visualizar(self):
-        con=conexao.conexao()
+        con=Conexao()
         sql_txt = "select * from prodserv order by descricao"
         rs=con.consultar_tree(sql_txt)
 
@@ -84,7 +84,7 @@ class ProdutoTreeview:
             self.tree.insert("", tk.END, values=linha)
 
     def pesquisar_nome(self, p):
-        con = conexao.conexao()
+        con = Conexao()
         try:
             sql_txt = f"select * from prodserv where descricao like '%{p}%'"
             rs = con.consultar_tree(sql_txt)
