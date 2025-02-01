@@ -1,35 +1,19 @@
 # -*- coding: utf-8 -*-
-import locale
-import os
-
-import platform
 from conexao import Conexao
 import tkinter as tk
-from tkinter import ttk
 from tkinter import messagebox
-from PIL import Image, ImageTk
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import A4
-from datetime import date
-
-from ClienteTreeview import ClienteTreeview
-from ProdutoTreeview import ProdutoTreeview
+from services.ClienteTreeview import ClienteTreeview
+from services.ProdutoTreeview import ProdutoTreeview
 from conexao import Conexao
-from router_path import imagemSecundaria
+from services.func_imprimir_vendas import imprimir
+from widgets.widgets_vendas import create_widgets_vendas
 
 
 class Vendas(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
         self.master = master
-        locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
-
-        larguraTela = self.master.winfo_screenwidth()
-        alturaTela = self.master.winfo_screenheight()
-        self.master.geometry(f'{larguraTela}x{alturaTela}+0+0')
-
-        self.tkimage_cli = ImageTk.PhotoImage(Image.open(imagemSecundaria).resize((larguraTela, alturaTela)))
-        tk.Label(self, image=self.tkimage_cli).grid()
+        
 
         self.create_widgets()
         self.numeracao()
@@ -38,6 +22,10 @@ class Vendas(tk.Frame):
         self.total()
         self.txtnumvenda.config(state="disabled")
         self.txtcodcli.focus_set()
+
+    def create_widgets(self):
+        create_widgets_vendas(self=self)
+        
 
     def abrir_popup_busca_cliente(self):
         popup_busca = tk.Toplevel(self.master)
@@ -332,83 +320,6 @@ class Vendas(tk.Frame):
             self.visualizar()
             self.total()
 
-    def imprimir(self):
-        # Cabeçalho do Relatório
-        today = date.today()
-        d3 = today.strftime("%d/%m/%y")
-            
-        cnv = canvas.Canvas("vendas.pdf")
-        width, height = A4
-        print("Largura= ", width, "  Altura= ", height)
-
-        cnv.setFont('Times-Roman', 14)
-        cnv.setFillColorRGB(0, 0, 255)
-
-        cnv.drawString(1, 820, "Sistema Comercial 1.0")
-
-        cnv.setFont('Times-Bold', 14)
-        cnv.setFillColorRGB(255, 0, 0)
-
-        cnv.drawString(250, 820, "Pedido de Vendas")
-
-        cnv.setFont('Times-Roman', 14)
-        cnv.setFillColorRGB(0, 0, 255)
-
-        cnv.drawString(540, 820, d3)
-
-        # Cabeçalho do Pedido
-        cnv.setLineWidth(2)
-        cnv.line(0, 810, 595, 810)
-
-        cnv.setFont('Times-Roman', 12)
-        cnv.setFillColorRGB(0, 0, 0)
-
-        cnv.drawString(10, 780, "Número do Pedido: " + self.txtnumvenda.get())
-        cnv.drawString(200, 780, "Data do Pedido:   " + d3)
-        
-        cnv.drawString(10, 750, "Código do Cliente: " + self.txtcodcli.get())
-        cnv.drawString(200, 750, "Nome do Cliente:  " + self.txtnomecli.get())
-
-        cnv.setLineWidth(1)
-        cnv.line(0, 720, 595, 720)
-
-        # Linhas do Pedido
-        cnv.setFont('Times-Bold', 12)
-        cnv.drawString(1, 700, "Lin")
-        cnv.drawString(40, 700, "Cod. Prod")
-        cnv.drawString(130, 700, "Descrição")
-        cnv.drawString(320, 700, "Quantidade")
-        cnv.drawString(430, 700, "Valor Unitário")
-        cnv.drawString(530, 700, "Valor")
-        cnv.setFont('Times-Roman', 12)
-        
-        linha = 680
-        for child in self.tree.get_children():
-            print(self.tree.item(child)["values"])
-            
-            cnv.drawString(1, linha, str(self.tree.item(child)["values"][0]))
-            cnv.drawString(40, linha, str(self.tree.item(child)["values"][1]))
-            cnv.drawString(130, linha, self.tree.item(child)["values"][2])
-            cnv.drawString(320, linha, str(self.tree.item(child)["values"][3]))
-            cnv.drawString(430, linha, locale.currency(float(self.tree.item(child)["values"][4])))
-            cnv.drawString(530, linha, locale.currency(float(self.tree.item(child)["values"][5])))
-
-            linha = linha - 20
-
-        # Total do Pedido
-        cnv.line(0, linha, 595, linha)
-        linha = linha - 20
-
-        cnv.setFont('Times-Bold', 12)
-        cnv.drawString(420, linha, "Total do Pedido ->")
-        cnv.drawString(530, linha, locale.currency(float(self.txt_total.get().strip())))
-        
-        cnv.save()
-
-        if platform.system() == "Windows":
-            os.startfile("vendas.pdf")
-        else:
-            os.system("xdg-open vendas.pdf")
     def baixa_estoque(self):
         con = Conexao()
         for child in self.tree.get_children():
@@ -421,122 +332,5 @@ class Vendas(tk.Frame):
     def menu(self):
         self.master.switch_to_menu()
 
-    def create_widgets(self):
-        lblnumvenda = tk.Label(self, text="Núm. Venda:", font=('Calibri', 12, 'bold'), bg='lightskyblue', fg='black', anchor='w')
-        lblnumvenda.place(x=50, y=25, width=100, height=20)
-
-        self.txtnumvenda = tk.Entry(self, justify='center', font=('Calibri', 12, 'bold'))
-        self.txtnumvenda.place(x=160, y=25, width=100, height=20)
-
-        lblcodcli = tk.Label(self, text="Cod. Cliente:", font=('Calibri', 12, 'bold'), bg='lightskyblue', fg='black', anchor='w')
-        lblcodcli.place(x=50, y=60, width=100, height=20)
-
-        self.txtcodcli = tk.Entry(self)
-        self.txtcodcli.place(x=160, y=60, width=100, height=20)
-        self.txtcodcli.bind('<Return>', self.bus_cli)
-
-        btnbuscli = tk.Button(self, text="Buscar cliente", bg='gold', foreground='black', font=('Calibri', 12, 'bold'), command=self.abrir_popup_busca_cliente)
-        btnbuscli.place(x=280, y=50, width=120, height=30)
-
-        lblnomecli = tk.Label(self, text="Nome Cliente:", font=('Calibri', 12, 'bold'), bg='lightskyblue', fg='black', anchor='w')
-        lblnomecli.place(x=50, y=100, width=100, height=20)
-
-        self.txtnomecli = tk.Entry(self)
-        self.txtnomecli.place(x=160, y=100, width=560, height=20)
-        self.txtnomecli.config(state="disabled")
-
-        lblcodprod = tk.Label(self, text="Cód. Prod:", font=('Calibri', 10, 'bold'), bg='lightskyblue', fg='black', anchor='w')
-        lblcodprod.place(x=50, y=160, width=100, height=20)
-
-        btnbusprod = tk.Button(self, text="Buscar produto", bg='gold', foreground='black', font=('Calibri', 12, 'bold'), command=self.abrir_popup_busca_prodserv)
-        btnbusprod.place(x=280, y=160, width=120, height=30)
-
-        self.txtcodprod = tk.Entry(self)
-        self.txtcodprod.place(x=160, y=160, width=100, height=20)
-        self.txtcodprod.bind('<Return>', self.bus_prod)
-
-        lbldescricao = tk.Label(self, text="Descrição:", font=('Calibri', 10, 'bold'), bg='lightskyblue', fg='black', anchor='w')
-        lbldescricao.place(x=50, y=200, width=100, height=20)
-
-        self.txtdescricao = tk.Entry(self)
-        self.txtdescricao.place(x=160, y=200, width=560, height=20)
-
-        lblqtde = tk.Label(self, text="Quantidade:", font=('Calibri', 10, 'bold'), bg='lightskyblue', fg='black', anchor='w')
-        lblqtde.place(x=50, y=240, width=100, height=20)
-
-        self.txtqtde = tk.Entry(self)
-        self.txtqtde.place(x=160, y=240, width=100, height=20)
-        self.txtqtde.bind('<FocusOut>', self.entrar_qtde)
-        self.txtqtde.bind('<Return>', self.entrar_qtde)
-
-        self.btnincluir = tk.Button(self, text="Incluir - F1", bg='gold', foreground='black', font=('Calibri', 12, 'bold'), command=self.gravar_lin)
-        self.btnincluir.place(x=160, y=290, width=100, height=30)
-        self.master.bind('<F1>', self.finalizar_linha)
-        self.btnincluir.bind('<Button-1>', self.finalizar_linha)
-        self.btnincluir.bind('<Return>', self.finalizar_linha)
-
-        self.lblvlrunit = tk.Label(self, text="Valor Unit:", font=('Calibri', 10, 'bold'), bg='lightskyblue', fg='black', anchor='w')
-        self.lblvlrunit.place(x=280, y=240, width=100, height=20)
-        self.lblvlrunit.config(state="disabled")
-
-        self.txtvlrunit = tk.Entry(self)
-        self.txtvlrunit.place(x=390, y=240, width=100, height=20)
-
-        lblvalor = tk.Label(self, text="Valor:", font=('Calibri', 10, 'bold'), bg='lightskyblue', fg='black', anchor='w')
-        lblvalor.place(x=510, y=240, width=100, height=20)
-
-        self.txtvalor = tk.Entry(self)
-        self.txtvalor.place(x=620, y=240, width=100, height=20)
-        self.txtvalor.config(state="disabled")
-
-        lbltotal = tk.Label(self, text="Total ->", font=('Calibri', 16, 'bold'), bg='lightskyblue', fg="black", anchor='c')
-        lbltotal.place(x=548, y=520, width=100, height=40)
-
-        self.txt_total = tk.Entry(self, justify='center', bg="silver", fg="blue", font=('Calibri', 16, 'bold'))
-        self.txt_total.place(x=650, y=520, width=150, height=40)
-        self.txt_total.config(state="readonly")
-
-        btnlimpar = tk.Button(self, text="Limpar - F2", bg='gold', foreground='black', font=('Calibri', 12, 'bold'), command=self.limpar)
-        btnlimpar.place(x=390, y=290, width=100, height=30)
-        btnlimpar.bind('<Button-1>', self.limpar)
-        self.master.bind('<F2>', self.limpar)
-
-        btnexcluir = tk.Button(self, text="Excluir", bg='gold', foreground='black', font=('Calibri', 12, 'bold'), command=self.excluir)
-        btnexcluir.place(x=620, y=290, width=100, height=30)
-
-        self.btngravar = tk.Button(self, text="Gravar", bg='black', foreground='white', font=('Calibri', 12, 'bold'), command=self.gravar)
-        self.btngravar.place(x=160, y=600, width=100, height=50)
-
-        self.btnimprimir = tk.Button(self, text="Imprimir", bg='green', foreground='white', font=('Calibri', 12, 'bold'), command=self.imprimir)
-        self.btnimprimir.place(x=280, y=600, width=100, height=50)
-
-        self.btncancelar = tk.Button(self, text="Cancelar", bg='red', foreground='white', font=('Calibri', 12, 'bold'), command=self.cancelar)
-        self.btncancelar.place(x=400, y=600, width=100, height=50)
-
-        self.btnmenu = tk.Button(self, text="Menu", bg='yellow', foreground='black', font=('Calibri', 12, 'bold'), command=self.menu)
-        self.btnmenu.place(x=520, y=600, width=100, height=50)
-
-        style = ttk.Style()
-        style.configure("mystyle.Treeview", font=("Calibri", 10))
-        style.configure("mystyle.Treeview.Heading", font=("Calibri", 12, "bold"))
-
-        self.tree = ttk.Treeview(self, column=("c1", "c2", "c3", "c4", "c5", "c6"), show='headings', style="mystyle.Treeview", padding=0)
-        self.tree.column("#1", width=50, anchor='c')
-        self.tree.heading("#1", text="Linha")
-        self.tree.column("#2", width=100, anchor='c')
-        self.tree.heading("#2", text="Código")
-        self.tree.column("#3", width=200, anchor='w')
-        self.tree.heading("#3", text="Descrição")
-        self.tree.column("#4", width=150, anchor='c')
-        self.tree.heading("#4", text="Quantidade")
-        self.tree.column("#5", width=100, anchor='c')
-        self.tree.heading("#5", text="Valor Unit")
-        self.tree.column("#6", width=150, anchor='c')
-        self.tree.heading("#6", text="Valor")
-        self.tree.place(x=50, y=350, height=180)
-
-        scrollbar = ttk.Scrollbar(self, orient=tk.VERTICAL, command=self.tree.yview)
-        self.tree.configure(yscroll=scrollbar.set)
-        scrollbar.place(x=801, y=350, height=180)
-
-        
+    def hook_imprimir(self):
+        imprimir(self=self)

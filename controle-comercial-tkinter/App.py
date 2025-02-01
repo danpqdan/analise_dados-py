@@ -1,13 +1,13 @@
 import threading
 import tkinter as tk
 from tkinter import messagebox
-from cadlogin import CadLogin
-from clientes import Cliente
+from func_pages.cadlogin import CadLogin
+from func_pages.clientes import Cliente
 from conexao import Conexao
-from login import TelaLogin
-from menu import TelaMenu
-from produtos import Produto
-from vendas import Vendas
+from func_pages.login import TelaLogin
+from func_pages.menu import TelaMenu
+from func_pages.produtos import Produto
+from func_pages.vendas import Vendas
 
 class App(tk.Tk):
     def __init__(self):

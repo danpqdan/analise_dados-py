@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from router_path import dir
+from assets.router_path import dir
 import os
 import sqlite3
 import bcrypt
