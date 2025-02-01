@@ -22,8 +22,8 @@ def create_widgets_vendas(self):
     self.txtnumvenda = tk.Entry(self, justify='center', font=('Calibri', 12, 'bold'))
     self.txtnumvenda.place(x=160, y=25, width=100, height=20)
     
-    btnbusvendas = tk.Button(self, justify='center', font=('Calibri', 12, 'bold'))
-    btnbusvendas.place(x=280, y=25, width=100)
+    btnbusvendas = tk.Button(self, text="Buscar venda", bg='gold', foreground='black', font=('Calibri', 12, 'bold'), command=self.abrir_popup_busca_prodserv)
+    btnbusvendas.place(x=280, y=23, width=120, height=30)
 
     lblcodcli = tk.Label(self, text="Cod. Cliente:", font=('Calibri', 12, 'bold'), bg='lightskyblue', fg='black', anchor='w')
     lblcodcli.place(x=50, y=60, width=100, height=20)
@@ -32,8 +32,8 @@ def create_widgets_vendas(self):
     self.txtcodcli.place(x=160, y=60, width=100, height=20)
     self.txtcodcli.bind('<Return>', self.bus_cli)
 
-    btnbuscli = tk.Button(self, text="Buscar produto", bg='gold', foreground='black', font=('Calibri', 12, 'bold'), command=self.abrir_popup_busca_prodserv)
-    btnbuscli.place(x=280, y=50, width=120, height=30)
+    btnbuscli = tk.Button(self, text="Buscar cliente", bg='gold', foreground='black', font=('Calibri', 12, 'bold'), command=self.abrir_popup_busca_cliente)
+    btnbuscli.place(x=280, y=58, width=120, height=30)
 
     lblnomecli = tk.Label(self, text="Nome Cliente:", font=('Calibri', 12, 'bold'), bg='lightskyblue', fg='black', anchor='w')
     lblnomecli.place(x=50, y=100, width=100, height=20)
@@ -46,7 +46,7 @@ def create_widgets_vendas(self):
     lblcodprod.place(x=50, y=160, width=100, height=20)
 
     btnbusprod = tk.Button(self, text="Buscar produto", bg='gold', foreground='black', font=('Calibri', 12, 'bold'), command=self.abrir_popup_busca_prodserv)
-    btnbusprod.place(x=280, y=160, width=120, height=30)
+    btnbusprod.place(x=280, y=158, width=120, height=30)
 
     self.txtcodprod = tk.Entry(self)
     self.txtcodprod.place(x=160, y=160, width=100, height=20)
