@@ -22,7 +22,7 @@ def create_widgets_vendas(self):
     self.txtnumvenda = tk.Entry(self, justify='center', font=('Calibri', 12, 'bold'))
     self.txtnumvenda.place(x=160, y=25, width=100, height=20)
     
-    btnbusvendas = tk.Button(self, text="Buscar venda", bg='gold', foreground='black', font=('Calibri', 12, 'bold'), command=self.abrir_popup_busca_prodserv)
+    btnbusvendas = tk.Button(self, text="Buscar venda", bg='gold', foreground='black', font=('Calibri', 12, 'bold'), command=self.abrir_popup_busca_vendas)
     btnbusvendas.place(x=280, y=23, width=120, height=30)
 
     lblcodcli = tk.Label(self, text="Cod. Cliente:", font=('Calibri', 12, 'bold'), bg='lightskyblue', fg='black', anchor='w')

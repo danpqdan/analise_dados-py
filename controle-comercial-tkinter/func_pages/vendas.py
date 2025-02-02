@@ -2,8 +2,10 @@
 from conexao import Conexao
 import tkinter as tk
 from tkinter import messagebox
+from services import VendasTreeview
 from services.ClienteTreeview import ClienteTreeview
 from services.ProdutoTreeview import ProdutoTreeview
+from services.VendasTreeview import VendasTreeview
 from conexao import Conexao
 from services.func_imprimir_vendas import imprimir
 from widgets.widgets_vendas import create_widgets_vendas
@@ -25,6 +27,24 @@ class Vendas(tk.Frame):
 
     def create_widgets(self):
         create_widgets_vendas(self=self)
+        
+    def abrir_popup_busca_vendas(self):
+        popup_busca = tk.Toplevel(self.master)
+        popup_busca.title("Buscar vendas")
+        popup_busca.geometry(f"{self.master.winfo_screenwidth()}x{self.master.winfo_screenheight()}")
+        popup_busca.resizable(True, True)
+        tree = VendasTreeview(popup_busca)
+        tree.tree.place(x=0, y=0, width=self.master.winfo_screenwidth(), height=self.master.winfo_screenheight())
+        def handle_duplo_click(event):
+            valores = tree.duplo_click(event)
+            print(f"Dados selecionados: {valores}")
+            if valores:
+                self.txtnumvenda.delete(0, tk.END)
+                self.txtnumvenda.insert(0, valores[0])
+            popup_busca.destroy()
+            self.txtcodcli.focus()
+            self.bus_cli()
+        tree.tree.bind("<Double-1>", handle_duplo_click)
         
 
     def abrir_popup_busca_cliente(self):
