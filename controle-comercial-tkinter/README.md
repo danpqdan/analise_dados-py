@@ -19,3 +19,15 @@
 ## MERGE c89baf701e8ef294b60097ac8f121cf398d98de8
 ### -> ADD: Funcionalidades de gerenciamento de produtos
 ### -> REF: Refatorado arvore visual para ProdutoTreeview
+
+## MERGE fd468f46a3d1935c8d3118567eca5224c78df7b3
+### -> ADD: Bind para facilitar o login.
+### -> ALT: Background do formulario de login.
+
+## MERGE 49bf05a92b027adbd3b13a666699ac2cb3f53d2f
+### -> ADD: Funcionalidade de busca e alteração de vendas.
+### -> ADD: Arvore de busca de vendas.
+### -> ALT: Corrigido alinhamento dos botões na interface.
+### -> FIX: Corrigido logica de auto incremento e update de vendas ja existentes.
+### -> REF: Refatorado estrutura do projeto em modulos.
+
