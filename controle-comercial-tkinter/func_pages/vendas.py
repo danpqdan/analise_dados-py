@@ -42,8 +42,7 @@ class Vendas(tk.Frame):
                 self.txtnumvenda.delete(0, tk.END)
                 self.txtnumvenda.insert(0, valores[0])
             popup_busca.destroy()
-            self.txtcodcli.focus()
-            self.bus_cli()
+            self.bus_venda(cod_compra=valores[0])
         tree.tree.bind("<Double-1>", handle_duplo_click)
         
 
@@ -273,10 +272,45 @@ class Vendas(tk.Frame):
             self.numeracao()
             self.visualizar()
             self.total()
-
+            
+            
+    def bus_venda(self,cod_compra, event=None):
+        con = Conexao()
+        sql_txt = f'select num_venda, codigo_cli,total_venda from vendas_cab where num_venda = {cod_compra} '
+        venda = con.consultar(sql_txt)
+        if venda:
+            sql_txt = '''SELECT A.lin_venda, A.codigo_prod, B.descricao, A.quantidade, A.valor_unit, A.valor
+                     FROM vendas_lin A
+                     JOIN prodserv B ON A.codigo_prod = B.codigo
+                     WHERE A.num_venda = ? 
+                     ORDER BY A.num_venda, A.lin_venda'''
+            linha_venda = con.consultar_tree(sql_txt, (venda[0],))
+            if linha_venda:
+                for linha in self.tree.get_children():
+                    self.tree.delete(linha)
+                for linha in linha_venda:
+                    self.tree.insert("", tk.END, values=linha)
+                    
+                # config num_venda
+                self.txtnumvenda.config(state="normal")
+                self.txtnumvenda.delete(0, "end")
+                self.txtnumvenda.insert(0, venda[0])
+                self.txtnumvenda.config(state="disabled")
+                #config txtcodcli
+                self.txtcodcli.config(state="normal")
+                self.txtcodcli.delete(0, "end")
+                self.txtcodcli.insert(0, venda[1])
+                self.txtcodcli.config(state="disabled")
+                self.bus_cli()
+                # config total_venda
+                self.txt_total.config(state="normal")
+                self.txt_total.delete(0, "end")
+                self.txt_total.insert(0, venda[2])
+                self.txt_total.config(state="disabled")
+                # config lin_venda
+            
     def bus_cli(self, event=None):
         con = Conexao()
-        print('Você digitou enter')
         var_codcli = self.txtcodcli.get()
         sql_txt = f"select nome from clientes where codigo = {var_codcli}"
         rs = con.consultar(sql_txt)
