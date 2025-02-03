@@ -237,41 +237,47 @@ class Vendas(tk.Frame):
             self.txtcodcli.config(state="normal")
             self.btngravar.config(state="disabled")
             self.btnimprimir.config(state="disabled")
+            
     def gravar(self):
         con = Conexao()
         num_venda = self.txtnumvenda.get()
         var_codcli = self.txtcodcli.get()
         var_total = float(self.txt_total.get())
-        
-        if var_total > 0:
-            sql_check = "SELECT COUNT(*) FROM auto_num;"
-            cursor = con.db.cursor()
-            cursor.execute(sql_check)
-            count = cursor.fetchone()[0]
-            cursor.close()
-            if count == 0:
-                sql_insert_initial = "INSERT INTO auto_num (num_venda) VALUES (0);"
-                con.gravar(sql_insert_initial)
-                print("Valor inicial inserido na tabela auto_num.")
-                
-            sql_text = "UPDATE auto_num SET num_venda = num_venda + 1 WHERE num_venda >= 0;"
-            con.gravar(sql_text)
-            sql_text = f"insert into vendas_cab (num_venda, codigo_cli, data_hora, total_venda) values ({num_venda},{var_codcli}, CURRENT_TIMESTAMP, {var_total});"
+        sql_venda_check = f"select * from vendas_cab where num_venda = {num_venda}"
+        if sql_venda_check:
+            sql_text = f"UPDATE vendas_cab SET codigo_cli = {var_codcli}, data_hora = CURRENT_TIMESTAMP, total_venda = {var_total} WHERE num_venda = {num_venda};"
             print(sql_text)
             con.gravar(sql_text)
-            con.fechar()
-            
-            self.baixa_estoque()
-            var_del = messagebox.askyesno("Imprimir", "Deseja Imprimir a Venda?", parent=self.master)
-            if var_del:
-                self.imprimir()
+        else:                       
+            if var_total > 0:
+                sql_check = "SELECT COUNT(*) FROM auto_num;"
+                cursor = con.db.cursor()
+                cursor.execute(sql_check)
+                count = cursor.fetchone()[0]
+                cursor.close()
+                if count == 0:
+                    sql_insert_initial = "INSERT INTO auto_num (num_venda) VALUES (0);"
+                    con.gravar(sql_insert_initial)
+                    print("Valor inicial inserido na tabela auto_num.")
 
-            # Limpa os campos após o registro
-            self.limpar()
-            self.limpar_cab()
-            self.numeracao()
-            self.visualizar()
-            self.total()
+                sql_text = "UPDATE auto_num SET num_venda = num_venda + 1 WHERE num_venda >= 0;"
+                con.gravar(sql_text)
+                sql_text = f"insert into vendas_cab (num_venda, codigo_cli, data_hora, total_venda) values ({num_venda},{var_codcli}, CURRENT_TIMESTAMP, {var_total});"
+                print(sql_text)
+                con.gravar(sql_text)
+                con.fechar()
+
+                self.baixa_estoque()
+                var_del = messagebox.askyesno("Imprimir", "Deseja Imprimir a Venda?", parent=self.master)
+                if var_del:
+                    self.imprimir()
+
+                # Limpa os campos após o registro
+                self.limpar()
+                self.limpar_cab()
+                self.numeracao()
+                self.visualizar()
+                self.total()
             
             
     def bus_venda(self,cod_compra, event=None):

@@ -33,12 +33,11 @@ def create_widgets_login(self):
 
     btnsubmeter = tk.Button(frame_botao, text="Login", bg='black', fg='white', font=('Calibri', 12, 'bold'), command=self.validasenha)
     btnsubmeter.grid(row=0, column=0, pady=5, padx=10)
-    btnsubmeter.bind('<Return>', self.validasenha)  # Event bound to the button itself
+    btnsubmeter.bind('<Return>', self.validasenha)
 
     btnsubmeter = tk.Button(frame_botao, text="Sair", bg='black', fg='white', font=('Calibri', 12, 'bold'), command=self.sair)
     btnsubmeter.grid(row=0, column=1, pady=5, padx=10)
 
-    # Bind the Enter key for the password field to call validasenha
-    self.txtsenha.bind('<Return>', lambda event: self.validasenha())  # Bind Enter key to call validasenha directly
+    self.txtsenha.bind('<Return>', lambda event: self.validasenha()) 
 
     self.txtusuario.focus_set()
