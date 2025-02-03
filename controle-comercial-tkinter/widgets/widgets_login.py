@@ -11,10 +11,10 @@ def create_widgets_login(self):
     self.tkimage_cli = ImageTk.PhotoImage(Image.open(imagemSecundaria).resize((larguraTela, alturaTela)))
     tk.Label(self, image=self.tkimage_cli).grid(row=0, column=0)
 
-    self.form = tk.Frame(self)
+    self.form = tk.Frame(self, bg="#96CAEF")
     self.form.grid(row=0, column=0, padx=30, pady=10)
 
-    frame_botao = tk.Frame(self.form)
+    frame_botao = tk.Frame(self.form, bg= "#96CAEF")
     frame_botao.grid(row=2, column=1, pady=5)
 
     lblusuario = tk.Label(self.form, text="Usuario:", bg="lightskyblue", font=('Calibri', 12, 'bold'))
@@ -33,9 +33,12 @@ def create_widgets_login(self):
 
     btnsubmeter = tk.Button(frame_botao, text="Login", bg='black', fg='white', font=('Calibri', 12, 'bold'), command=self.validasenha)
     btnsubmeter.grid(row=0, column=0, pady=5, padx=10)
-    
+    btnsubmeter.bind('<Return>', self.validasenha)  # Event bound to the button itself
+
     btnsubmeter = tk.Button(frame_botao, text="Sair", bg='black', fg='white', font=('Calibri', 12, 'bold'), command=self.sair)
     btnsubmeter.grid(row=0, column=1, pady=5, padx=10)
 
+    # Bind the Enter key for the password field to call validasenha
+    self.txtsenha.bind('<Return>', lambda event: self.validasenha())  # Bind Enter key to call validasenha directly
 
     self.txtusuario.focus_set()
